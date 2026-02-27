@@ -674,7 +674,12 @@
   <!-- MOBILE HEADER (Only shows on mobile) -->
   <div class="app-header">
     <div class="header-title">AI Assistant</div>
-
+    <button onclick="newChat()"
+      style="background:none;border:none;color:var(--text-secondary);cursor:pointer;display:flex;align-items:center;gap:4px;font-size:13px;font-weight:600;font-family:inherit;padding:8px 12px;border-radius:12px;transition:all 0.2s;"
+      onmouseover="this.style.background='rgba(0,0,0,0.05)'" onmouseout="this.style.background='none'">
+      <span class="material-symbols-rounded" style="font-size:20px;">add_comment</span>
+      New Chat
+    </button>
   </div>
 
   <!-- MAIN CONTENT -->
@@ -776,6 +781,11 @@
     console.log('🌐 API Base URL:', API_BASE_URL);
 
     // ====================================
+    // CONVERSATION MEMORY (Like ChatGPT)
+    // ====================================
+    let conversationHistory = []; // Stores {role: 'user'|'assistant', content: '...'}
+
+    // ====================================
     // CHAT FUNCTIONALITY
     // ====================================
     const msgList = document.getElementById('msgList');
@@ -796,6 +806,17 @@
     function ask(txt) {
       input.value = txt;
       send();
+    }
+
+    // New Chat - clears conversation memory
+    function newChat() {
+      conversationHistory = [];
+      msgList.innerHTML = '';
+      msgList.classList.remove('active');
+      welcome.style.display = '';
+      welcome.style.opacity = '1';
+      isFirst = true;
+      console.log('🗑️ Conversation history cleared');
     }
 
     function addMsg(html, type) {
@@ -898,16 +919,23 @@
       input.blur();
 
       addMsg(txt.replace(/</g, "&lt;"), 'user');
+
+      // Add user message to conversation history
+      conversationHistory.push({ role: 'user', content: txt });
+
       showTyping();
 
       try {
-        // Use API_BASE_URL + endpoint
+        // Use API_BASE_URL + endpoint, send conversation history
         const res = await fetch(`${API_BASE_URL}${API_ENDPOINTS.chat}`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
           },
-          body: JSON.stringify({ question: txt })
+          body: JSON.stringify({
+            question: txt,
+            history: conversationHistory.slice(0, -1) // Send history WITHOUT the current message
+          })
         });
 
         const data = await res.json();
@@ -917,6 +945,14 @@
           let content = data.answer;
           if (typeof marked !== 'undefined') content = marked.parse(content);
           addMsg(content, 'ai');
+
+          // Add AI response to conversation history
+          conversationHistory.push({ role: 'assistant', content: data.answer });
+
+          // Keep history manageable (last 20 exchanges = 40 messages)
+          if (conversationHistory.length > 40) {
+            conversationHistory = conversationHistory.slice(-40);
+          }
         } else {
           addMsg('Sorry, I encountered an error processing your request.', 'ai');
         }
@@ -930,6 +966,23 @@
     btn.onclick = send;
     input.onkeypress = (e) => { if (e.key === 'Enter') send(); };
     window.ask = ask;
+    window.newChat = newChat;
+
+    // Prevent pull-to-refresh on mobile
+    let lastTouchY = 0;
+    document.addEventListener('touchstart', (e) => {
+      lastTouchY = e.touches[0].clientY;
+    }, { passive: true });
+
+    document.addEventListener('touchmove', (e) => {
+      const touchY = e.touches[0].clientY;
+      const scrollTop = msgList.scrollTop;
+
+      // If pulling down and already at the top of the chat, block it
+      if (touchY > lastTouchY && scrollTop <= 0) {
+        e.preventDefault();
+      }
+    }, { passive: false });
 
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {

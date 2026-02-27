@@ -71,9 +71,10 @@ function formatAttendanceReport(data) {
 
 router.post('/chat', async (req, res) => {
   try {
-    // Accept both 'message' and 'question'
-    const { message, question } = req.body;
+    // Accept both 'message' and 'question', plus conversation history
+    const { message, question, history } = req.body;
     const userQuery = message || question;
+    const conversationHistory = Array.isArray(history) ? history : [];
 
     if (!userQuery || !userQuery.trim()) {
       return res.status(400).json({
@@ -83,10 +84,59 @@ router.post('/chat', async (req, res) => {
     }
 
     console.log('User Query:', userQuery);
+    console.log('Conversation History Length:', conversationHistory.length);
+
+    // ================================================================
+    // FOLLOW-UP DETECTION: Resolve context from conversation history
+    // ================================================================
+    let resolvedQuery = userQuery;
+    const lowerQuery = userQuery.toLowerCase().trim();
+
+    // Detect follow-up patterns
+    const followUpPatterns = [
+      /^(?:what about|how about|and for|and|also|same for|check for|show for|now for|now check|tell me about)\s+(.+)/i,
+      /^(?:what's|whats|what is)\s+(.+?)(?:'s|s)?\s*(?:attendance|report|details|info)?\s*$/i,
+      /^(.+?)(?:'s|s)?\s+(?:attendance|report|details|info)\s*\??$/i
+    ];
+
+    if (conversationHistory.length > 0) {
+      for (const pattern of followUpPatterns) {
+        const match = lowerQuery.match(pattern);
+        if (match && match[1]) {
+          const newSubject = match[1].trim();
+          // Find the last user query to understand context
+          const lastUserMessages = conversationHistory.filter(m => m.role === 'user');
+          if (lastUserMessages.length > 0) {
+            const lastQuestion = lastUserMessages[lastUserMessages.length - 1].content.toLowerCase();
+
+            // If previous question was about attendance
+            if (lastQuestion.includes('attendance') || lastQuestion.includes('report')) {
+              resolvedQuery = `Show attendance report for ${newSubject}`;
+              console.log(`Follow-up detected! Resolved: "${userQuery}" -> "${resolvedQuery}"`);
+            }
+            // If previous question was about student details
+            else if (lastQuestion.includes('student') || lastQuestion.includes('find') || lastQuestion.includes('show') || lastQuestion.includes('details')) {
+              resolvedQuery = `Show details for ${newSubject}`;
+              console.log(`Follow-up detected! Resolved: "${userQuery}" -> "${resolvedQuery}"`);
+            }
+            // If previous question was about subjects
+            else if (lastQuestion.includes('subject') || lastQuestion.includes('course')) {
+              resolvedQuery = `Show subjects for ${newSubject}`;
+              console.log(`Follow-up detected! Resolved: "${userQuery}" -> "${resolvedQuery}"`);
+            }
+            // Generic follow-up - just search for the entity
+            else {
+              resolvedQuery = `Show details for ${newSubject}`;
+              console.log(`Generic follow-up detected! Resolved: "${userQuery}" -> "${resolvedQuery}"`);
+            }
+          }
+          break;
+        }
+      }
+    }
 
     // Handle simple greetings without API call
     const greetings = ['hi', 'hello', 'hey', 'hii', 'hiii', 'good morning', 'good afternoon', 'good evening'];
-    const lowerQuery = userQuery.toLowerCase().trim();
     if (greetings.includes(lowerQuery) || greetings.some(g => lowerQuery === g + '!' || lowerQuery === g + '.')) {
       return res.json({
         success: true,
@@ -95,15 +145,16 @@ router.post('/chat', async (req, res) => {
       });
     }
 
-    // Step 1: Generate MongoDB query
-    const queryInfo = await queryGenerator.generateMongoQuery(userQuery);
+    // Step 1: Generate MongoDB query (use resolved query for follow-ups)
+    const queryInfo = await queryGenerator.generateMongoQuery(resolvedQuery);
     console.log('Generated Query:', JSON.stringify(queryInfo, null, 2));
 
     // Check if this is a greeting or non-database query
     if (!queryInfo.collection || queryInfo.collection === null || queryInfo.operation === null) {
       console.log('Non-database query detected');
 
-      const conversationalResponse = await geminiService.generateResponse(`
+      // Use conversation history for context-aware responses
+      const conversationalResponse = await geminiService.generateResponseWithHistory(`
 You are a friendly college AI assistant. The user said: "${userQuery}"
 
 Respond warmly and naturally. If it's a greeting, greet them and briefly mention what you can help with.
@@ -118,7 +169,7 @@ You can help with:
 
 Keep your response brief, friendly, and helpful (2-3 sentences max).
 DO NOT use emojis - use simple text only.
-      `);
+      `, conversationHistory);
 
       return res.json({
         success: true,
