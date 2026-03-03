@@ -21,7 +21,8 @@ subjects:
   name, subjectCode, stream, semester, subjectType (CORE/ELECTIVE), isLanguageSubject, isActive
 
 students:
-  studentID (U18ER24C00XX), name, stream, semester, parentPhone, languageSubject, electiveSubject, isActive, academicYear
+  studentID (U18ER24C00XX), name, stream, semester, parentPhone, mentorEmail, languageSubject, electiveSubject, isActive, academicYear
+  NOTE: When displaying student details, if mentorEmail exists, the result will also have mentorName (resolved from teachers collection). Show mentorName instead of mentorEmail when available.
 
 teachers:
   name, email, firebaseUid, createdSubjects[{subject, stream, semester, teacherEmail}]
