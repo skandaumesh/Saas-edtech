@@ -1,775 +1,182 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Promotion - Smart Attendance</title>
-
   <link rel="icon" type="image/png" href="logo2.png" />
   <script src="js/config.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded" />
-
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL@20..48,100..700,0..1" />
   <style>
     :root {
-      --primary: #0F172A;
-      --primary-light: #1E293B;
-      --accent: #10B981;
-      --text-primary: #0F172A;
-      --text-secondary: #64748B;
-      --bg-body: #F8FAFC;
-      --glass-bg: rgba(255, 255, 255, 0.7);
-      --glass-border: rgba(255, 255, 255, 0.5);
-      --danger: #EF4444;
-      --success: #10B981;
-    }
-
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: 'Outfit', sans-serif;
-    }
-
-    body {
-      background: #f0f4f1;
-      height: 100vh;
-      display: flex;
-      overflow: hidden;
-      color: var(--text-primary);
-    }
-
-
-    /* ========== GLASS SIDEBAR ========== */
-    .sidebar {
-      width: 72px;
-      background: rgba(255, 255, 255, 0.45);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border-right: 1px solid var(--glass-border);
-      flex-direction: column;
-      padding: 20px 0;
-      display: flex;
-      flex-shrink: 0;
-      z-index: 1000;
-      transition: width 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-      overflow: hidden;
-    }
-
-    .sidebar:hover {
-      width: 240px;
-    }
-
-    .logo-section {
-      display: flex;
-      align-items: center;
-      height: 48px;
-      margin-bottom: 24px;
-      padding-left: 20px;
-      transition: padding 0.35s ease;
-    }
-
-    .sidebar:hover .logo-section {
-      padding-left: 20px;
-    }
-
-    .logo {
-      width: 32px;
-      height: 32px;
-      flex-shrink: 0;
-    }
-
-    .logo img {
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
-      border-radius: 8px;
-    }
-
-    .brand-name {
-      font-size: 15px;
-      font-weight: 700;
-      color: var(--text-primary);
-      white-space: nowrap;
-      opacity: 0;
-      margin-left: 12px;
-      transition: opacity 0.2s ease 0.1s;
-    }
-
-    .sidebar:hover .brand-name {
-      opacity: 1;
-    }
-
-    .nav-menu {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }
-
-    .nav-item {
-      display: flex;
-      align-items: center;
-      height: 48px;
-      margin: 0 10px;
-      border-radius: 12px;
-      cursor: pointer;
-      text-decoration: none;
-      color: var(--text-secondary);
-      font-size: 14px;
-      font-weight: 500;
-      transition: all 0.25s ease;
-      overflow: hidden;
-    }
-
-    .nav-item .material-symbols-rounded {
-      font-size: 22px;
-      width: 52px;
-      min-width: 52px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      transition: all 0.25s ease;
-    }
-
-    .nav-item span:not(.material-symbols-rounded) {
-      white-space: nowrap;
-      opacity: 0;
-      transition: opacity 0.2s ease 0.1s;
-    }
-
-    .sidebar:hover .nav-item span:not(.material-symbols-rounded) {
-      opacity: 1;
-    }
-
-    .nav-item:hover {
-      background: rgba(0, 0, 0, 0.04);
-      color: var(--text-primary);
-    }
-
-    .nav-item.active {
-      background: #C6E9D2;
-      color: #1B5E2F;
-      font-weight: 600;
-    }
-
-    .nav-item.active .material-symbols-rounded {
-      color: #1B5E2F;
-    }
-
-    .nav-item.active:hover {
-      background: #B8E0C8;
-    }
-
-    .sidebar-footer {
-      margin-top: auto;
-      padding: 16px 10px 8px;
-    }
-
-    .logout-btn {
-      display: flex;
-      align-items: center;
-      height: 48px;
-      border-radius: 12px;
-      background: transparent;
-      color: #9CA3AF;
-      border: none;
-      cursor: pointer;
-      font-size: 13px;
-      font-weight: 500;
-      font-family: inherit;
-      transition: all 0.25s ease;
-      overflow: hidden;
-      width: 100%;
-    }
-
-    .logout-btn:hover {
-      background: #FEF2F2;
-      color: #DC4F4F;
-    }
-
-    .logout-btn .material-symbols-rounded {
-      font-size: 22px;
-      width: 52px;
-      min-width: 52px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-
-    .logout-btn span:not(.material-symbols-rounded) {
-      white-space: nowrap;
-      opacity: 0;
-      transition: opacity 0.2s ease 0.1s;
-    }
-
-    .sidebar:hover .logout-btn span:not(.material-symbols-rounded) {
-      opacity: 1;
-    }
-
-
-    /* ========== MAIN CONTENT ========== */
-    .main-content {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-      position: relative;
-      background: #FFFFFF;
-    }
-
-    /* Green gradient rising from bottom */
-    .main-content::before {
-      content: '';
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      height: 55%;
-      background: linear-gradient(to bottom, rgba(198, 233, 210, 0) 0%, rgba(198, 233, 210, 0.35) 50%, rgba(198, 233, 210, 0.55) 100%);
-      pointer-events: none;
-      z-index: 0;
-    }
-
-    .main-content::after {
-      content: '';
-      position: absolute;
-      top: 0;
-      right: 0;
-      width: 35%;
-      height: 30%;
-      background: radial-gradient(ellipse at top right, rgba(198, 233, 210, 0.35) 0%, transparent 70%);
-      pointer-events: none;
-      z-index: 0;
-    }
-
-    /* ========== COMPACT HEADER ========== */
-    .header {
-      background: transparent;
-      padding: 16px 24px 12px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-
-      position: relative;
-      z-index: 1;
-    }
-
-    .page-title-section h1 {
-      font-size: 22px;
-      font-weight: 700;
-      color: var(--text-primary);
-      letter-spacing: -0.5px;
-    }
-
-    .page-title-section p {
-      font-size: 12px;
-      color: var(--text-secondary);
-    }
-
-    .header-user-profile {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 3px 10px 3px 3px;
-      background: rgba(255, 255, 255, 0.3);
-      backdrop-filter: blur(10px);
-      border: 1px solid rgba(255, 255, 255, 0.8);
-      border-radius: 40px;
-      cursor: pointer;
-      transition: all 0.3s;
-    }
-
-    .header-avatar {
-      width: 26px;
-      height: 26px;
-      border-radius: 50%;
-      background: #0F172A;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: white;
-      font-weight: 600;
-      font-size: 10px;
-    }
-
-    .header-user-name {
-      font-size: 11px;
-      font-weight: 600;
-      color: var(--text-primary);
-      line-height: 1.2;
-    }
-
-    .header-user-email {
-      font-size: 9px;
-      color: var(--text-secondary);
-      line-height: 1;
-    }
-
-    /* ========== CONTENT AREA ========== */
-    .content-area {
-      flex: 1;
-      overflow-y: auto;
-      padding: 0 24px 24px;
-
-      position: relative;
-      z-index: 1;
-    }
-
-    /* ========== GLASS CARDS ========== */
-    .filter-card,
-    .promotion-card {
-      background: rgba(255, 255, 255, 0.65);
-      border-radius: 14px;
-      padding: 16px;
-      margin-bottom: 16px;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-    }
-
-    .filter-header {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 12px;
-      padding-bottom: 10px;
-      border-bottom: 1px solid #F1F5F9;
-    }
-
-    .filter-header .material-symbols-rounded {
-      color: #6366F1;
-      font-size: 20px;
-    }
-
-    .filter-header h2 {
-      font-size: 15px;
-      font-weight: 700;
-      color: #1E293B;
-    }
-
-    .filter-grid {
-      display: grid;
-      grid-template-columns: 1fr auto;
-      gap: 12px;
-      align-items: flex-end;
-    }
-
-    .form-group label {
-      display: block;
-      font-size: 11px;
-      font-weight: 600;
-      color: #64748B;
-      margin-bottom: 6px;
-    }
-
-    .form-control {
-      padding: 8px 12px;
-      border: 2px solid #E5E7EB;
-      border-radius: 10px;
-      font-size: 12px;
-      font-weight: 500;
-      background: white;
-      font-family: 'Poppins', sans-serif;
-      transition: all 0.2s;
-      width: 100%;
-      outline: none;
-    }
-
-    .form-control:focus {
-      border-color: #6366F1;
-      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
-    }
-
-    /* ========== BUTTONS ========== */
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-      padding: 8px 16px;
-      border-radius: 50px;
-      font-weight: 600;
-      font-size: 12px;
-      border: none;
-      cursor: pointer;
-      transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    }
-
-    .btn-primary {
-      background: #0F172A;
-      color: white;
-    }
-
-    .btn-success {
-      background: linear-gradient(135deg, #22C55E, #16a34a);
-      color: white;
-      box-shadow: 0 4px 12px rgba(34, 197, 94, 0.25);
-    }
-
-    .btn-info {
-      background: linear-gradient(135deg, #6366F1, #8B5CF6);
-      color: white;
-      box-shadow: 0 4px 12px rgba(99, 102, 241, 0.25);
-    }
-
-    .btn:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-    }
-
-    /* ========== STATS CARDS ========== */
-    .stats-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-      gap: 12px;
-      margin-bottom: 16px;
-    }
-
-    .stat-card {
-      background: rgba(255, 255, 255, 0.65);
-      border-radius: 14px;
-      padding: 16px;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-      transition: all 0.3s;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .stat-card:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
-    }
-
-    .stat-info {
-      flex: 1;
-    }
-
-    .stat-value {
-      font-size: 26px;
-      font-weight: 700;
-      color: #1E293B;
-      line-height: 1;
-      margin-bottom: 6px;
-    }
-
-    .stat-label {
-      font-size: 11px;
-      font-weight: 500;
-      color: #64748B;
-    }
-
-    .stat-icon {
-      width: 44px;
-      height: 44px;
-      border-radius: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 22px;
-    }
-
-    .stat-icon.blue {
-      background: linear-gradient(135deg, #DBEAFE, #BFDBFE);
-      color: #1E40AF;
-    }
-
-    .stat-icon.green {
-      background: linear-gradient(135deg, #D1FAE5, #A7F3D0);
-      color: #065F46;
-    }
-
-    .stat-icon.purple {
-      background: linear-gradient(135deg, #E0E7FF, #C7D2FE);
-      color: #4338CA;
-    }
-
-    .stat-icon.yellow {
-      background: linear-gradient(135deg, #FEF3C7, #FDE68A);
-      color: #92400E;
-    }
-
-    /* ========== PROMOTION SPECIFIC ========== */
-    .preview-box {
-      background: rgba(255, 255, 255, 0.4);
-      border-radius: 16px;
-      padding: 16px;
-      margin-top: 16px;
-      border: 1px solid white;
-    }
-
-    .preview-title {
-      font-size: 13px;
-      font-weight: 700;
-      color: #1E293B;
-      margin-bottom: 12px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .semester-row {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
-      gap: 10px;
-      margin-bottom: 20px;
-    }
-
-    .semester-box {
-      background: white;
-      border-radius: 12px;
-      padding: 12px;
-      text-align: center;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
-      border: 1px solid #F1F5F9;
-    }
-
-    .semester-number {
-      font-size: 20px;
-      font-weight: 700;
-      color: #6366F1;
-    }
-
-    .semester-name {
-      font-size: 10px;
-      font-weight: 600;
-      color: #64748B;
-      text-transform: uppercase;
-    }
-
-    .flow-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-      gap: 8px;
-    }
-
-    .flow-card {
-      background: white;
-      padding: 10px 14px;
-      border-radius: 10px;
-      font-size: 12px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      border: 1px solid #F1F5F9;
-    }
-
-    .flow-count {
-      font-weight: 700;
-      color: #6366F1;
-    }
-
-    .warning-banner {
-      background: #FFFBEB;
-      border-left: 4px solid #F59E0B;
-      padding: 12px 16px;
-      border-radius: 8px;
-      margin: 16px 0;
-      display: flex;
-      gap: 12px;
-      align-items: center;
-    }
-
-    .warning-banner .material-symbols-rounded {
-      color: #F59E0B;
-    }
-
-    .warning-content h4 {
-      font-size: 13px;
-      font-weight: 700;
-      color: #92400E;
-    }
-
-    .warning-content p {
-      font-size: 11px;
-      color: #92400E;
-    }
-
-    .undo-banner {
-      background: #EEF2FF;
-      border: 1px solid #C7D2FE;
-      padding: 12px 16px;
-      border-radius: 12px;
-      margin-bottom: 16px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .empty-state-container {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      min-height: 300px;
-    }
-
-    .empty-state {
-      text-align: center;
-      max-width: 400px;
-    }
-
-    .empty-state-icon {
-      width: 80px;
-      height: 80px;
-      background: rgba(99, 102, 241, 0.1);
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin: 0 auto 16px;
-      color: #6366F1;
-      font-size: 32px;
-    }
-
-    .hidden {
-      display: none !important;
-    }
-
-    .loading-spinner {
-      width: 14px;
-      height: 14px;
-      border: 2px solid rgba(255, 255, 255, 0.3);
-      border-top-color: white;
-      border-radius: 50%;
-      animation: spin 0.8s linear infinite;
-    }
-
-    @keyframes spin {
-      to {
-        transform: rotate(360deg);
-      }
-    }
-
-    @media (max-width: 768px) {
-      .filter-grid {
-        grid-template-columns: 1fr;
-      }
-    }
+      --bg-root:#0C0C0E;--bg-sidebar:#111113;--bg-surface:#161618;
+      --bg-card:#1A1A1D;--bg-card-hover:#1F1F22;--bg-elevated:#242427;
+      --border:rgba(255,255,255,0.05);--border-hover:rgba(255,255,255,0.09);
+      --text-primary:#E8E8EC;--text-secondary:#8A8A92;--text-muted:#4E4E56;
+      --green:#34D399;--green-dim:rgba(52,211,153,0.15);
+      --red:#F87171;--red-dim:rgba(248,113,113,0.15);
+      --amber:#FBBF24;--amber-dim:rgba(251,191,36,0.15);
+      --purple:#A78BFA;--purple-dim:rgba(167,139,250,0.12);
+      --blue:#60A5FA;--blue-dim:rgba(96,165,250,0.15);
+      --sidebar-w:220px;
+    }
+    *{margin:0;padding:0;box-sizing:border-box;}
+    body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg-root);color:var(--text-primary);height:100vh;display:flex;overflow:hidden;-webkit-font-smoothing:antialiased;}
+
+    /* ══════════ SIDEBAR ══════════ */
+    .sidebar{width:var(--sidebar-w);background:var(--bg-sidebar);border-right:1px solid var(--border);display:flex;flex-direction:column;padding:20px 12px;flex-shrink:0;overflow-y:auto;}
+    .sidebar::-webkit-scrollbar{width:0;}
+    .sb-logo{padding:4px 8px;margin-bottom:20px;text-align:center;}
+    .sb-logo img{width:100%;height:auto;border-radius:8px;}
+    .sb-search{display:flex;align-items:center;gap:8px;background:var(--bg-card);border:1px solid var(--border);border-radius:8px;padding:8px 10px;margin-bottom:20px;cursor:pointer;}
+    .sb-search .material-symbols-rounded{font-size:16px;color:var(--text-muted);}
+    .sb-search span:last-child{font-size:12px;color:var(--text-muted);}
+    .sb-group{margin-bottom:8px;}
+    .sb-link{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:8px;text-decoration:none;color:var(--text-secondary);font-size:13px;font-weight:500;transition:all .15s;}
+    .sb-link:hover{background:rgba(255,255,255,0.04);color:var(--text-primary);}
+    .sb-link.active{background:rgba(255,255,255,0.06);color:var(--text-primary);font-weight:600;}
+    .sb-link .material-symbols-rounded{font-size:18px;}
+    .sb-divider{height:1px;background:var(--border);margin:12px 8px;}
+    .sb-bottom{margin-top:auto;padding-top:12px;}
+    .sb-logout{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:8px;width:100%;background:none;border:none;color:var(--text-muted);font-size:13px;font-weight:500;font-family:inherit;cursor:pointer;transition:all .15s;}
+    .sb-logout:hover{background:var(--red-dim);color:var(--red);}
+    .sb-logout .material-symbols-rounded{font-size:18px;}
+
+    /* ══════════ MAIN ══════════ */
+    .main{flex:1;display:flex;flex-direction:column;overflow:hidden;}
+    .topbar{padding:24px 32px 0;display:flex;justify-content:space-between;align-items:flex-start;flex-shrink:0;}
+    .topbar h1{font-size:24px;font-weight:700;letter-spacing:-0.5px;}
+    .topbar-sub{font-size:12px;color:var(--text-muted);margin-top:2px;}
+    .topbar-right{display:flex;align-items:center;gap:10px;}
+    .avatar-pill{display:flex;align-items:center;gap:8px;padding:4px 12px 4px 4px;background:var(--bg-card);border:1px solid var(--border);border-radius:40px;}
+    .avatar-dot{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#6366F1,#A78BFA);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;}
+    .avatar-info .av-name{font-size:11px;font-weight:600;}
+    .avatar-info .av-email{font-size:9px;color:var(--text-muted);}
+
+    .scroll{flex:1;overflow-y:auto;padding:20px 32px 40px;}
+    .scroll::-webkit-scrollbar{width:4px;}
+    .scroll::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.06);border-radius:10px;}
+
+    /* ══════════ FILTER ══════════ */
+    .filter-card{background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:16px;}
+    .filter-header{display:flex;align-items:center;gap:10px;margin-bottom:14px;padding-bottom:12px;border-bottom:1px solid var(--border);}
+    .filter-header .material-symbols-rounded{color:var(--purple);font-size:20px;}
+    .filter-header h2{font-size:15px;font-weight:700;}
+    .filter-grid{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:flex-end;}
+    .form-group label{display:block;font-size:11px;font-weight:600;color:var(--text-secondary);margin-bottom:6px;}
+    .form-control{padding:9px 12px;border:1px solid var(--border);border-radius:8px;font-size:12px;font-weight:500;background:var(--bg-elevated);color:var(--text-primary);font-family:inherit;width:100%;outline:none;transition:all .2s;}
+    .form-control:focus{border-color:var(--purple);box-shadow:0 0 0 2px var(--purple-dim);}
+
+    /* ══════════ BUTTONS ══════════ */
+    .btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:9px 18px;border-radius:8px;font-weight:600;font-size:12px;border:none;cursor:pointer;transition:all .2s;font-family:inherit;}
+    .btn-primary{background:rgba(255,255,255,0.08);color:var(--text-primary);border:1px solid var(--border);}
+    .btn-primary:hover:not(:disabled){background:rgba(255,255,255,0.12);border-color:var(--border-hover);}
+    .btn-success{background:var(--green-dim);color:var(--green);border:1px solid rgba(52,211,153,0.2);}
+    .btn-success:hover:not(:disabled){background:rgba(52,211,153,0.25);}
+    .btn-info{background:var(--purple-dim);color:var(--purple);border:1px solid rgba(167,139,250,0.2);}
+    .btn-info:hover{background:rgba(167,139,250,0.2);}
+    .btn:disabled{opacity:0.4;cursor:not-allowed;}
+    .btn .material-symbols-rounded{font-size:16px;}
+
+    /* ══════════ STATS ══════════ */
+    .stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px;}
+    .stat-card{background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:18px 20px;display:flex;justify-content:space-between;align-items:center;transition:all .2s;}
+    .stat-card:hover{border-color:var(--border-hover);background:var(--bg-card-hover);}
+    .stat-info{flex:1;}
+    .stat-value{font-size:28px;font-weight:800;line-height:1;margin-bottom:6px;letter-spacing:-1px;}
+    .stat-label{font-size:11px;font-weight:500;color:var(--text-secondary);}
+    .stat-icon{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:22px;}
+    .stat-icon.blue{background:var(--blue-dim);color:var(--blue);}
+    .stat-icon.green{background:var(--green-dim);color:var(--green);}
+    .stat-icon.purple{background:var(--purple-dim);color:var(--purple);}
+    .stat-icon.yellow{background:var(--amber-dim);color:var(--amber);}
+
+    /* ══════════ EMPTY STATE ══════════ */
+    .empty-state-container{display:flex;align-items:center;justify-content:center;min-height:350px;padding:40px 20px;}
+    .empty-state{text-align:center;max-width:400px;}
+    .empty-state-icon{width:80px;height:80px;margin:0 auto 16px;background:var(--purple-dim);border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--purple);font-size:36px;}
+    .empty-state h3{font-size:18px;font-weight:700;margin-bottom:8px;}
+    .empty-state p{font-size:13px;color:var(--text-secondary);line-height:1.6;}
+
+    /* ══════════ PROMOTION CARD ══════════ */
+    .promotion-card{background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:20px;}
+    .preview-box{margin-bottom:16px;}
+    .preview-title{font-size:13px;font-weight:700;margin-bottom:10px;color:var(--text-secondary);}
+    .semester-row{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin-bottom:20px;}
+    .semester-box{background:var(--bg-elevated);border:1px solid var(--border);border-radius:10px;padding:12px;text-align:center;}
+    .semester-number{font-size:24px;font-weight:800;letter-spacing:-1px;margin-bottom:4px;}
+    .semester-name{font-size:10px;font-weight:600;color:var(--text-secondary);}
+    .flow-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:8px;margin-bottom:20px;}
+    .flow-card{background:var(--bg-elevated);border:1px solid var(--border);border-radius:10px;padding:12px 16px;display:flex;justify-content:space-between;align-items:center;font-size:12px;font-weight:600;}
+    .flow-count{background:var(--green-dim);color:var(--green);padding:2px 8px;border-radius:6px;font-size:11px;font-weight:700;}
+
+    /* ══════════ UNDO / WARNING ══════════ */
+    .undo-banner{background:var(--purple-dim);border:1px solid rgba(167,139,250,0.2);border-radius:10px;padding:14px 16px;display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;}
+    .warning-banner{background:var(--amber-dim);border:1px solid rgba(251,191,36,0.2);border-radius:10px;padding:14px 16px;display:flex;gap:12px;align-items:flex-start;margin-bottom:14px;}
+    .warning-banner .material-symbols-rounded{color:var(--amber);font-size:20px;flex-shrink:0;margin-top:2px;}
+    .warning-content h4{font-size:13px;font-weight:700;color:var(--amber);margin-bottom:4px;}
+    .warning-content p{font-size:12px;color:var(--text-secondary);line-height:1.5;}
+
+    .hidden{display:none!important;}
+    .loading-spinner{width:16px;height:16px;border:2px solid transparent;border-top:2px solid currentColor;border-radius:50%;animation:spin .6s linear infinite;display:inline-block;}
+    @keyframes spin{to{transform:rotate(360deg);}}
   </style>
 </head>
-
 <body>
-  <!-- ========== SIDEBAR ========== -->
   <aside class="sidebar">
-    <div class="logo-section">
-      <div class="logo">
-        <img src="logo2.png" alt="Logo">
-      </div>
-      <div class="brand-name">MLA AHL</div>
+    <div class="sb-logo"><img src="logo.png" alt="Logo"></div>
+    <div class="sb-group">
+      <a href="dashboard.html" class="sb-link"><span class="material-symbols-rounded">dashboard</span>Dashboard</a>
+      <a href="students.html" class="sb-link"><span class="material-symbols-rounded">group</span>Students</a>
+      <a href="report.html" class="sb-link"><span class="material-symbols-rounded">description</span>Reports</a>
+      <a href="promotion.html" class="sb-link active"><span class="material-symbols-rounded">trending_up</span>Promote</a>
     </div>
-    <nav class="nav-menu">
-      <a href="dashboard.html" class="nav-item">
-        <span class="material-symbols-rounded">dashboard</span>
-        <span>Dashboard</span>
-      </a>
-      <a href="students.html" class="nav-item">
-        <span class="material-symbols-rounded">group</span>
-        <span>Students</span>
-      </a>
-      <a href="report.html" class="nav-item">
-        <span class="material-symbols-rounded">description</span>
-        <span>Reports</span>
-      </a>
-      <a href="promotion.html" class="nav-item active">
-        <span class="material-symbols-rounded">trending_up</span>
-        <span>Promote</span>
-      </a>
-      <a href="ai-assistant.html" class="nav-item">
-        <span class="material-symbols-rounded">auto_awesome</span>
-        <span>AI Assistant</span>
-      </a>
-      <a href="teachers.html" class="nav-item">
-        <span class="material-symbols-rounded">person</span>
-        <span>Teachers</span>
-      </a>
-      <a href="mentorship.html" class="nav-item">
-        <span class="material-symbols-rounded">school</span>
-        <span>Mentors</span>
-      </a>
-      <a href="msg.html" class="nav-item" id="nav-whatsapp">
-        <span class="material-symbols-rounded">chat</span>
-        <span>WhatsApp</span>
-      </a>
-    </nav>
-    <div class="sidebar-footer">
-      <button class="logout-btn" id="logoutBtn">
-        <span class="material-symbols-rounded">logout</span>
-        <span>Log Out</span>
-      </button>
+    <div class="sb-divider"></div>
+    <div class="sb-group">
+      <a href="ai-assistant.html" class="sb-link"><span class="material-symbols-rounded">auto_awesome</span>AI Assistant</a>
+      <a href="teachers.html" class="sb-link"><span class="material-symbols-rounded">person</span>Teachers</a>
+      <a href="mentorship.html" class="sb-link"><span class="material-symbols-rounded">school</span>Mentors</a>
+      <a href="msg.html" class="sb-link" id="nav-whatsapp"><span class="material-symbols-rounded">chat</span>WhatsApp</a>
     </div>
+    <div class="sb-divider"></div>
+    <div class="sb-bottom"><button class="sb-logout" id="logoutBtn"><span class="material-symbols-rounded">logout</span>Log Out</button></div>
   </aside>
 
-  <!-- ========== MAIN CONTENT ========== -->
-  <div class="main-content">
-    <header class="header">
-      <div class="page-title-section">
-        <h1>Student Promotion</h1>
-        <p>Manage semester upgrades and graduations</p>
-      </div>
-      <div class="header-actions">
-        <div class="header-user-profile">
-          <div class="header-avatar" id="headerAvatar">IT</div>
-          <div class="header-user-info">
-            <div class="header-user-name" id="headerUserFullName"></div>
-            <div class="header-user-email" id="headerUserEmail"></div>
-          </div>
+  <div class="main">
+    <header class="topbar">
+      <div><h1>Student Promotion</h1><div class="topbar-sub">Manage semester upgrades and graduations</div></div>
+      <div class="topbar-right">
+        <div class="avatar-pill">
+          <div class="avatar-dot" id="headerAvatar">IT</div>
+          <div class="avatar-info"><div class="av-name" id="headerUserFullName"></div><div class="av-email" id="headerUserEmail"></div></div>
         </div>
       </div>
     </header>
 
-    <div class="content-area">
+    <div class="scroll">
       <!-- Filter -->
       <div class="filter-card">
-        <div class="filter-header">
-          <span class="material-symbols-rounded">filter_alt</span>
-          <h2>Select Stream</h2>
-        </div>
+        <div class="filter-header"><span class="material-symbols-rounded">filter_alt</span><h2>Select Stream</h2></div>
         <div class="filter-grid">
           <div class="form-group">
             <label>Academic Stream</label>
-            <select id="promotionStream" class="form-control">
-              <option value="">-- Select Stream --</option>
-            </select>
+            <select id="promotionStream" class="form-control"><option value="">-- Select Stream --</option></select>
           </div>
-          <button onclick="loadPromotionPreview()" id="loadBtn" class="btn btn-primary" disabled style="height: 38px;">
-            <span class="material-symbols-rounded">refresh</span>
-            Load Data
+          <button onclick="loadPromotionPreview()" id="loadBtn" class="btn btn-primary" disabled style="height:38px;">
+            <span class="material-symbols-rounded">refresh</span> Load Data
           </button>
         </div>
       </div>
 
       <!-- Stats -->
       <div id="statsRow" class="stats-grid hidden">
-        <div class="stat-card">
-          <div class="stat-info">
-            <div class="stat-value" id="totalStudents">0</div>
-            <div class="stat-label">Total Students</div>
-          </div>
-          <div class="stat-icon blue"><span class="material-symbols-rounded">group</span></div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-info">
-            <div class="stat-value" id="willGraduate">0</div>
-            <div class="stat-label">Will Graduate</div>
-          </div>
-          <div class="stat-icon green"><span class="material-symbols-rounded">school</span></div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-info">
-            <div class="stat-value" id="willPromote">0</div>
-            <div class="stat-label">Will Promote</div>
-          </div>
-          <div class="stat-icon purple"><span class="material-symbols-rounded">trending_up</span></div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-info">
-            <div class="stat-value" id="sem1Empty">0</div>
-            <div class="stat-label">Sem 1 Ready</div>
-          </div>
-          <div class="stat-icon yellow"><span class="material-symbols-rounded">new_releases</span></div>
-        </div>
+        <div class="stat-card"><div class="stat-info"><div class="stat-value" id="totalStudents">0</div><div class="stat-label">Total Students</div></div><div class="stat-icon blue"><span class="material-symbols-rounded">group</span></div></div>
+        <div class="stat-card"><div class="stat-info"><div class="stat-value" id="willGraduate">0</div><div class="stat-label">Will Graduate</div></div><div class="stat-icon green"><span class="material-symbols-rounded">school</span></div></div>
+        <div class="stat-card"><div class="stat-info"><div class="stat-value" id="willPromote">0</div><div class="stat-label">Will Promote</div></div><div class="stat-icon purple"><span class="material-symbols-rounded">trending_up</span></div></div>
+        <div class="stat-card"><div class="stat-info"><div class="stat-value" id="sem1Empty">0</div><div class="stat-label">Sem 1 Ready</div></div><div class="stat-icon yellow"><span class="material-symbols-rounded">new_releases</span></div></div>
       </div>
 
       <!-- Empty State -->
@@ -784,56 +191,47 @@
       <!-- Promotion Card -->
       <div id="promotionPreview" class="hidden">
         <div class="promotion-card">
-          <div class="filter-header" style="border:none; margin-bottom:0;">
-            <span class="material-symbols-rounded">upgrade</span>
-            <h2 style="font-size:18px;">Semester Promotion</h2>
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px;">
+            <span class="material-symbols-rounded" style="color:var(--purple);font-size:20px;">upgrade</span>
+            <h2 style="font-size:18px;font-weight:700;">Semester Promotion</h2>
           </div>
-          <p style="font-size:12px; color:#64748B; margin-bottom:16px;">Execute upgrades for all students in this
-            stream
-          </p>
+          <p style="font-size:12px;color:var(--text-secondary);margin-bottom:16px;">Execute upgrades for all students in this stream</p>
 
           <div class="preview-box">
             <div class="preview-title">📊 Semester Distribution</div>
             <div class="semester-row" id="semesterGrid"></div>
-
             <div class="preview-title">🎓 Promotion Flow</div>
             <div class="flow-grid" id="promotionFlow"></div>
           </div>
 
           <div id="undoSection" class="hidden undo-banner">
-            <div style="display:flex; align-items:center; gap:10px;">
-              <span class="material-symbols-rounded" style="color:#6366F1;">history</span>
+            <div style="display:flex;align-items:center;gap:10px;">
+              <span class="material-symbols-rounded" style="color:var(--purple);">history</span>
               <div style="font-size:12px;">
                 <strong style="display:block;">Undo Available</strong>
-                <span id="undoInfo" style="color:#4338CA;"></span>
+                <span id="undoInfo" style="color:var(--purple);"></span>
               </div>
             </div>
-            <button onclick="undoLastPromotion()" id="undoBtn" class="btn btn-info"
-              style="padding:6px 12px; font-size:11px;">
-              Undo Last
-            </button>
+            <button onclick="undoLastPromotion()" id="undoBtn" class="btn btn-info" style="padding:6px 12px;font-size:11px;">Undo Last</button>
           </div>
 
           <div class="warning-banner">
             <span class="material-symbols-rounded">info</span>
             <div class="warning-content">
               <h4>Important</h4>
-              <p>Promoting students is irreversible after 24 hours. Semester 6 students will be marked graduated.
-              </p>
+              <p>Promoting students is irreversible after 24 hours. Semester 6 students will be marked graduated.</p>
             </div>
           </div>
 
-          <button onclick="executeSimplePromotion()" id="promoteBtn" class="btn btn-success"
-            style="width:100%; height:44px; font-size:14px;">
-            <span class="material-symbols-rounded">upgrade</span>
-            Confirm & Execute Promotion
+          <button onclick="executeSimplePromotion()" id="promoteBtn" class="btn btn-success" style="width:100%;height:44px;font-size:14px;">
+            <span class="material-symbols-rounded">upgrade</span> Confirm & Execute Promotion
           </button>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Firebase Auth Script -->
+  <!-- Firebase Auth -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
     import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
@@ -842,8 +240,6 @@
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     window.firebaseAuth = auth;
-
-    // API_BASE_URL is set in js/config.js via window.APP_CONFIG
 
     async function fetchTeacherProfile(email) {
       try {
@@ -875,8 +271,6 @@
   </script>
 
   <script>
-    // API_BASE_URL is set in js/config.js via window.APP_CONFIG
-
     document.getElementById('promotionStream').addEventListener('change', function () {
       document.getElementById('loadBtn').disabled = !this.value;
       document.getElementById('statsRow').classList.add('hidden');
@@ -946,8 +340,6 @@
       btn.disabled = false; btn.innerHTML = original;
     }
   </script>
-
   <script src="js/promotion.js"></script>
 </body>
-
 </html>

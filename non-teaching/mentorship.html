@@ -1,1384 +1,482 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mentorship | Admin Panel</title>
-    <link rel="icon" type="image/png" href="logo2.png">
-    <script src="js/config.js"></script>
-
-    <!-- Google Fonts & Icons -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet"
-        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
-
-    <!-- Excel Support -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-
-    <style>
-        :root {
-            --primary: #0F172A;
-            --primary-light: #1E293B;
-            --accent: #10B981;
-            --text-primary: #0F172A;
-            --text-secondary: #64748B;
-            --bg-body: #F8FAFC;
-            --glass-bg: rgba(255, 255, 255, 0.7);
-            --glass-border: rgba(255, 255, 255, 0.5);
-            --danger: #EF4444;
-            --success: #10B981;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Outfit', sans-serif;
-        }
-
-        body {
-            background: #f0f4f1;
-
-            height: 100vh;
-            display: flex;
-            overflow: hidden;
-            color: var(--text-primary);
-        }
-
-
-        /* ========== GLASS SIDEBAR ========== */
-        .sidebar {
-            width: 72px;
-            background: rgba(255, 255, 255, 0.45);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border-right: 1px solid var(--glass-border);
-            flex-direction: column;
-            padding: 20px 0;
-            display: flex;
-            flex-shrink: 0;
-            z-index: 1000;
-            transition: width 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-            overflow: hidden;
-        }
-
-        .sidebar:hover {
-            width: 240px;
-        }
-
-        .logo-section {
-            display: flex;
-            align-items: center;
-            height: 48px;
-            margin-bottom: 24px;
-            padding-left: 20px;
-            transition: padding 0.35s ease;
-        }
-
-        .sidebar:hover .logo-section {
-            padding-left: 20px;
-        }
-
-        .logo {
-            width: 32px;
-            height: 32px;
-            flex-shrink: 0;
-        }
-
-        .logo img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-            border-radius: 8px;
-        }
-
-        .brand-name {
-            font-size: 15px;
-            font-weight: 700;
-            color: var(--text-primary);
-            white-space: nowrap;
-            opacity: 0;
-            margin-left: 12px;
-            transition: opacity 0.2s ease 0.1s;
-        }
-
-        .sidebar:hover .brand-name {
-            opacity: 1;
-        }
-
-        .nav-menu {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-        }
-
-        .nav-item {
-            display: flex;
-            align-items: center;
-            height: 48px;
-            margin: 0 10px;
-            border-radius: 12px;
-            cursor: pointer;
-            text-decoration: none;
-            color: var(--text-secondary);
-            font-size: 14px;
-            font-weight: 500;
-            transition: all 0.25s ease;
-            overflow: hidden;
-        }
-
-        .nav-item .material-symbols-rounded {
-            font-size: 22px;
-            width: 52px;
-            min-width: 52px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            transition: all 0.25s ease;
-        }
-
-        .nav-item span:not(.material-symbols-rounded) {
-            white-space: nowrap;
-            opacity: 0;
-            transition: opacity 0.2s ease 0.1s;
-        }
-
-        .sidebar:hover .nav-item span:not(.material-symbols-rounded) {
-            opacity: 1;
-        }
-
-        .nav-item:hover {
-            background: rgba(0, 0, 0, 0.04);
-            color: var(--text-primary);
-        }
-
-        .nav-item.active {
-            background: #C6E9D2;
-            color: #1B5E2F;
-            font-weight: 600;
-        }
-
-        .nav-item.active .material-symbols-rounded {
-            color: #1B5E2F;
-        }
-
-        .nav-item.active:hover {
-            background: #B8E0C8;
-        }
-
-        .sidebar-footer {
-            margin-top: auto;
-            padding: 16px 10px 8px;
-        }
-
-        .logout-btn {
-            display: flex;
-            align-items: center;
-            height: 48px;
-            border-radius: 12px;
-            background: transparent;
-            color: #9CA3AF;
-            border: none;
-            cursor: pointer;
-            font-size: 13px;
-            font-weight: 500;
-            font-family: inherit;
-            transition: all 0.25s ease;
-            overflow: hidden;
-            width: 100%;
-        }
-
-        .logout-btn:hover {
-            background: #FEF2F2;
-            color: #DC4F4F;
-        }
-
-        .logout-btn .material-symbols-rounded {
-            font-size: 22px;
-            width: 52px;
-            min-width: 52px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .logout-btn span:not(.material-symbols-rounded) {
-            white-space: nowrap;
-            opacity: 0;
-            transition: opacity 0.2s ease 0.1s;
-        }
-
-        .sidebar:hover .logout-btn span:not(.material-symbols-rounded) {
-            opacity: 1;
-        }
-
-
-        /* ========== MAIN CONTENT ========== */
-        .main-content {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-            position: relative;
-            background: #FFFFFF;
-        }
-
-        /* Green gradient rising from bottom */
-        .main-content::before {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 55%;
-            background: linear-gradient(to bottom, rgba(198, 233, 210, 0) 0%, rgba(198, 233, 210, 0.35) 50%, rgba(198, 233, 210, 0.55) 100%);
-            pointer-events: none;
-            z-index: 0;
-        }
-
-        .main-content::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            right: 0;
-            width: 35%;
-            height: 30%;
-            background: radial-gradient(ellipse at top right, rgba(198, 233, 210, 0.35) 0%, transparent 70%);
-            pointer-events: none;
-            z-index: 0;
-        }
-
-        /* ========== HEADER ========== */
-        .header {
-            background: transparent;
-            padding: 16px 12px 12px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-
-            position: relative;
-            z-index: 1;
-        }
-
-        .page-title h1 {
-            font-size: 22px;
-            font-weight: 700;
-            color: var(--text-primary);
-            letter-spacing: -0.5px;
-        }
-
-        .page-title p {
-            font-size: 13px;
-            color: var(--text-secondary);
-        }
-
-        .header-actions {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .header-user-profile {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding: 3px 10px 3px 3px;
-            background: rgba(255, 255, 255, 0.3);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.8);
-            border-radius: 40px;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .header-avatar {
-            width: 26px;
-            height: 26px;
-            border-radius: 50%;
-            background: #0F172A;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: 600;
-            font-size: 10px;
-        }
-
-        .header-user-info {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .header-user-name {
-            font-size: 11px;
-            font-weight: 600;
-            color: var(--text-primary);
-            line-height: 1.2;
-        }
-
-        .header-user-email {
-            font-size: 9px;
-            color: var(--text-secondary);
-            line-height: 1;
-        }
-
-        /* ========== CONTENT AREA ========== */
-        .content-area {
-            flex: 1;
-            overflow: hidden;
-            /* Disable page scroll to force internal scroll */
-            padding: 0 12px 12px;
-            display: flex;
-            flex-direction: column;
-
-            position: relative;
-            z-index: 1;
-        }
-
-        /* ========== STATS CARDS ========== */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-            gap: 16px;
-            margin-bottom: 16px;
-            flex-shrink: 0;
-        }
-
-        .stat-card {
-            background: rgba(255, 255, 255, 0.65);
-            backdrop-filter: blur(20px) saturate(180%);
-            border: 1px solid rgba(255, 255, 255, 0.8);
-            border-radius: 20px;
-            padding: 20px;
-            display: flex;
-            align-items: center;
-            gap: 16px;
-        }
-
-        .stat-icon {
-            width: 48px;
-            height: 48px;
-            border-radius: 14px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-        }
-
-        .stat-icon.total {
-            background: linear-gradient(135deg, #0F172A, #1E293B);
-        }
-
-        .stat-icon.pending {
-            background: linear-gradient(135deg, #F59E0B, #D97706);
-        }
-
-        .stat-icon.assigned {
-            background: linear-gradient(135deg, #10B981, #059669);
-        }
-
-        .stat-info h3 {
-            font-size: 24px;
-            font-weight: 700;
-            color: var(--text-primary);
-        }
-
-        .stat-info p {
-            font-size: 13px;
-            color: var(--text-secondary);
-        }
-
-        /* ========== MENTORSHIP PANEL ========== */
-        .mentorship-panel {
-            display: grid;
-            grid-template-columns: 350px 1fr;
-            gap: 20px;
-            height: calc(100vh - 220px);
-            min-height: 400px;
-        }
-
-        .panel-card {
-            background: rgba(255, 255, 255, 0.65);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.8);
-            border-radius: 24px;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-            height: 100%;
-        }
-
-        .panel-header {
-            padding: 20px;
-            border-bottom: 1px solid var(--glass-border);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .panel-header h2 {
-            font-size: 16px;
-            font-weight: 600;
-        }
-
-        .mentor-list {
-            flex: 1;
-            overflow-y: auto;
-            padding: 12px;
-            min-height: 0;
-        }
-
-        .mentor-item {
-            padding: 12px;
-            border-radius: 16px;
-            cursor: pointer;
-            transition: all 0.2s;
-            margin-bottom: 8px;
-            border: 1px solid transparent;
-        }
-
-        .mentor-item:hover {
-            background: rgba(255, 255, 255, 0.5);
-        }
-
-        .mentor-item.active {
-            background: white;
-            border-color: var(--accent);
-            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.1);
-        }
-
-        .mentee-view {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            min-height: 0;
-            /* Fix for flex children scrolling */
-        }
-
-        .mentee-empty {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            color: var(--text-secondary);
-            text-align: center;
-            padding: 40px;
-        }
-
-        .mentee-table-container {
-            flex: 1;
-            overflow-y: auto !important;
-            padding: 0;
-            /* Removed padding to fix header width */
-            padding-bottom: 100px;
-            min-height: 0;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        th {
-            text-align: left;
-            padding: 16px 20px;
-            font-size: 13px;
-            font-weight: 600;
-            color: var(--text-secondary);
-            border-bottom: 2px solid #F1F5F9;
-            /* More distinct header line */
-            position: sticky;
-            top: 0;
-            background: #FFFFFF;
-            z-index: 10;
-        }
-
-        td {
-            padding: 12px 15px;
-            font-size: 13.5px;
-            border-bottom: 1px solid #F1F5F9;
-            vertical-align: middle;
-            color: var(--text-primary);
-        }
-
-        /* Column Specifics */
-        th:nth-child(1),
-        td:nth-child(1) {
-            width: 45px;
-            text-align: center;
-            padding: 12px 8px;
-        }
-
-        /* # */
-        th:nth-child(2),
-        td:nth-child(2) {
-            width: 140px;
-        }
-
-        /* USN */
-        th:nth-child(3),
-        td:nth-child(3) {
-            width: 30%;
-        }
-
-        /* Name - flexible but limited */
-        th:nth-child(4),
-        td:nth-child(4) {
-            width: 120px;
-        }
-
-        /* Stream */
-        th:nth-child(5),
-        td:nth-child(5) {
-            width: 70px;
-            text-align: center;
-        }
-
-        /* Sem */
-        th:nth-child(6),
-        td:nth-child(6) {
-            width: 80px;
-            text-align: center;
-        }
-
-        /* Action */
-
-        /* Action */
-
-        .table-footer {
-            padding: 20px;
-            background: #F8FAFC;
-            border-top: 1px solid #F1F5F9;
-            text-align: right;
-            color: var(--text-secondary);
-            font-size: 13px;
-            font-weight: 600;
-        }
-
-        .id-badge {
-            background: #F1F5F9;
-            padding: 4px 8px;
-            border-radius: 6px;
-            font-family: monospace;
-            font-weight: 600;
-        }
-
-        /* ========== ACTIONS ========== */
-        .btn-assign {
-            background: var(--primary);
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 10px;
-            font-size: 13px;
-            font-weight: 600;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .btn-remove {
-            color: var(--danger);
-            background: none;
-            border: none;
-            cursor: pointer;
-            padding: 4px;
-            border-radius: 6px;
-        }
-
-        .btn-remove:hover {
-            background: rgba(239, 68, 68, 0.1);
-        }
-
-        /* ========== MODAL ========== */
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(15, 23, 42, 0.3);
-            backdrop-filter: blur(4px);
-            z-index: 2000;
-            display: none;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .modal-overlay.active {
-            display: flex;
-        }
-
-        .modal {
-            background: white;
-            width: 450px;
-            border-radius: 24px;
-            padding: 30px;
-            box-shadow: 0 20px 50px rgba(15, 23, 42, 0.2);
-        }
-
-        .modal h2 {
-            margin-bottom: 20px;
-        }
-
-        .form-group {
-            margin-bottom: 15px;
-        }
-
-        .form-group label {
-            display: block;
-            font-size: 13px;
-            font-weight: 600;
-            margin-bottom: 6px;
-        }
-
-        .form-group input,
-        .form-group textarea {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #E2E8F0;
-            border-radius: 10px;
-            font-size: 14px;
-        }
-
-        .modal-footer {
-            display: flex;
-            justify-content: flex-end;
-            gap: 10px;
-            margin-top: 24px;
-        }
-
-        .modal-btn {
-            padding: 10px 20px;
-            border-radius: 10px;
-            border: none;
-            font-weight: 600;
-            cursor: pointer;
-        }
-
-        .modal-btn.primary {
-            background: var(--primary);
-            color: white;
-        }
-
-        .modal-btn.secondary {
-            background: #E2E8F0;
-        }
-
-        #toastContainer {
-            position: fixed;
-            bottom: 24px;
-            right: 24px;
-            z-index: 9999;
-        }
-
-        .toast {
-            background: white;
-            padding: 12px 20px;
-            border-radius: 12px;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
-            margin-top: 10px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-size: 14px;
-            font-weight: 500;
-            border-left: 4px solid var(--accent);
-        }
-
-        /* ========== MODAL TABS ========== */
-        .modal-tabs {
-            display: flex;
-            gap: 15px;
-            margin-bottom: 20px;
-            border-bottom: 1px solid #E2E8F0;
-            padding-bottom: 10px;
-        }
-
-        .modal-tab {
-            font-size: 14px;
-            font-weight: 600;
-            color: var(--text-secondary);
-            cursor: pointer;
-            padding: 5px 10px;
-            border-radius: 8px;
-            transition: all 0.2s;
-        }
-
-        .modal-tab.active {
-            color: var(--primary);
-            background: #F1F5F9;
-        }
-
-        .tab-content {
-            display: none;
-        }
-
-        .tab-content.active {
-            display: block;
-        }
-
-        /* ========== SEARCH RESULTS ========== */
-        .search-container {
-            position: relative;
-        }
-
-        .search-results {
-            position: absolute;
-            top: 100%;
-            left: 0;
-            right: 0;
-            background: white;
-            border: 1px solid #E2E8F0;
-            border-radius: 12px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-            z-index: 100;
-            max-height: 200px;
-            overflow-y: auto;
-            margin-top: 5px;
-            display: none;
-        }
-
-        .search-result-item {
-            padding: 10px 15px;
-            cursor: pointer;
-            border-bottom: 1px solid #F1F5F9;
-            transition: background 0.2s;
-            text-align: left;
-        }
-
-        .search-result-item:last-child {
-            border-bottom: none;
-        }
-
-        .search-result-item:hover {
-            background: #F8FAFC;
-        }
-
-        .selected-student-chip {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            background: var(--primary);
-            color: white;
-            padding: 6px 12px;
-            border-radius: 20px;
-            font-size: 13px;
-            margin-top: 10px;
-        }
-
-        .selected-student-chip .remove-chip {
-            cursor: pointer;
-            font-size: 16px;
-            font-weight: bold;
-        }
-
-        .bulk-actions {
-            display: flex;
-            gap: 10px;
-            margin-top: 10px;
-        }
-
-        .btn-file {
-            background: #F1F5F9;
-            color: var(--text-primary);
-            border: 1px solid #E2E8F0;
-            padding: 8px 12px;
-            border-radius: 10px;
-            font-size: 12px;
-            font-weight: 600;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Mentorship | Admin Panel</title>
+  <link rel="icon" type="image/png" href="logo2.png" />
+  <script src="js/config.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL@20..48,100..700,0..1" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <style>
+    :root {
+      --bg-root:#0C0C0E;--bg-sidebar:#111113;--bg-surface:#161618;
+      --bg-card:#1A1A1D;--bg-card-hover:#1F1F22;--bg-elevated:#242427;
+      --border:rgba(255,255,255,0.05);--border-hover:rgba(255,255,255,0.09);
+      --text-primary:#E8E8EC;--text-secondary:#8A8A92;--text-muted:#4E4E56;
+      --green:#34D399;--green-dim:rgba(52,211,153,0.15);
+      --red:#F87171;--red-dim:rgba(248,113,113,0.15);
+      --amber:#FBBF24;--amber-dim:rgba(251,191,36,0.15);
+      --purple:#A78BFA;--purple-dim:rgba(167,139,250,0.12);
+      --blue:#60A5FA;--blue-dim:rgba(96,165,250,0.15);
+      --sidebar-w:220px;
+    }
+    *{margin:0;padding:0;box-sizing:border-box;}
+    body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg-root);color:var(--text-primary);height:100vh;display:flex;overflow:hidden;-webkit-font-smoothing:antialiased;}
+
+    /* ══════════ SIDEBAR ══════════ */
+    .sidebar{width:var(--sidebar-w);background:var(--bg-sidebar);border-right:1px solid var(--border);display:flex;flex-direction:column;padding:20px 12px;flex-shrink:0;overflow-y:auto;}
+    .sidebar::-webkit-scrollbar{width:0;}
+    .sb-logo{padding:4px 8px;margin-bottom:20px;text-align:center;}
+    .sb-logo img{width:100%;height:auto;border-radius:8px;}
+    .sb-search{display:flex;align-items:center;gap:8px;background:var(--bg-card);border:1px solid var(--border);border-radius:8px;padding:8px 10px;margin-bottom:20px;cursor:pointer;}
+    .sb-search .material-symbols-rounded{font-size:16px;color:var(--text-muted);}
+    .sb-search span:last-child{font-size:12px;color:var(--text-muted);}
+    .sb-group{margin-bottom:8px;}
+    .sb-link{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:8px;text-decoration:none;color:var(--text-secondary);font-size:13px;font-weight:500;transition:all .15s;}
+    .sb-link:hover{background:rgba(255,255,255,0.04);color:var(--text-primary);}
+    .sb-link.active{background:rgba(255,255,255,0.06);color:var(--text-primary);font-weight:600;}
+    .sb-link .material-symbols-rounded{font-size:18px;}
+    .sb-divider{height:1px;background:var(--border);margin:12px 8px;}
+    .sb-bottom{margin-top:auto;padding-top:12px;}
+    .sb-logout{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:8px;width:100%;background:none;border:none;color:var(--text-muted);font-size:13px;font-weight:500;font-family:inherit;cursor:pointer;transition:all .15s;}
+    .sb-logout:hover{background:var(--red-dim);color:var(--red);}
+    .sb-logout .material-symbols-rounded{font-size:18px;}
+
+    /* ══════════ MAIN ══════════ */
+    .main{flex:1;display:flex;flex-direction:column;overflow:hidden;}
+    .topbar{padding:24px 32px 0;display:flex;justify-content:space-between;align-items:flex-start;flex-shrink:0;}
+    .topbar h1{font-size:24px;font-weight:700;letter-spacing:-0.5px;}
+    .topbar-sub{font-size:12px;color:var(--text-muted);margin-top:2px;}
+    .topbar-right{display:flex;align-items:center;gap:10px;}
+    .avatar-pill{display:flex;align-items:center;gap:8px;padding:4px 12px 4px 4px;background:var(--bg-card);border:1px solid var(--border);border-radius:40px;}
+    .avatar-dot{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#6366F1,#A78BFA);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;}
+    .avatar-info .av-name{font-size:11px;font-weight:600;}
+    .avatar-info .av-email{font-size:9px;color:var(--text-muted);}
+
+    .scroll{flex:1;overflow:hidden;padding:20px 32px 20px;display:flex;flex-direction:column;}
+
+    /* ══════════ STATS ══════════ */
+    .stats-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:16px;flex-shrink:0;}
+    .stat-card{background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:18px 20px;display:flex;align-items:center;gap:14px;transition:all .2s;}
+    .stat-card:hover{border-color:var(--border-hover);background:var(--bg-card-hover);}
+    .stat-icon{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:22px;}
+    .stat-icon.total{background:var(--blue-dim);color:var(--blue);}
+    .stat-icon.assigned{background:var(--green-dim);color:var(--green);}
+    .stat-info h3{font-size:28px;font-weight:800;letter-spacing:-1px;margin-bottom:2px;}
+    .stat-info p{font-size:11px;font-weight:600;color:var(--text-secondary);}
+
+    /* ══════════ MENTORSHIP PANEL ══════════ */
+    .mentorship-panel{display:grid;grid-template-columns:300px 1fr;gap:16px;flex:1;min-height:0;}
+    .panel-card{background:var(--bg-card);border:1px solid var(--border);border-radius:12px;overflow:hidden;display:flex;flex-direction:column;}
+    .panel-header{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;flex-shrink:0;}
+    .panel-header h2{font-size:15px;font-weight:700;}
+
+    .mentor-list{flex:1;overflow-y:auto;}
+    .mentor-list::-webkit-scrollbar{width:3px;}
+    .mentor-list::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.06);border-radius:10px;}
+    .mentor-item{padding:14px 20px;border-bottom:1px solid var(--border);cursor:pointer;transition:all .15s;}
+    .mentor-item:hover{background:rgba(255,255,255,0.03);}
+    .mentor-item.active{background:rgba(167,139,250,0.08);border-left:3px solid var(--purple);}
+
+    .mentee-view{padding:16px 20px;min-height:200px;flex:1;overflow-y:auto;}
+    .mentee-view::-webkit-scrollbar{width:3px;}
+    .mentee-view::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.06);border-radius:10px;}
+    .mentee-empty{text-align:center;padding:60px 20px;color:var(--text-muted);}
+    .mentee-empty .material-symbols-rounded{font-size:64px;opacity:0.2;display:block;margin-bottom:10px;}
+    .mentee-empty p{font-size:13px;color:var(--text-secondary);}
+
+    .mentee-table-container{overflow-x:auto;}
+    .mentee-table-container table{width:100%;border-collapse:collapse;font-size:12px;}
+    .mentee-table-container th,.mentee-table-container td{padding:10px 14px;text-align:left;border-bottom:1px solid var(--border);}
+    .mentee-table-container thead th{background:var(--bg-elevated);font-weight:600;font-size:11px;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.5px;}
+    .mentee-table-container tbody tr:hover{background:rgba(255,255,255,0.02);}
+    .id-badge{background:var(--bg-elevated);padding:3px 8px;border-radius:6px;font-size:11px;font-weight:600;color:var(--purple);}
+    .table-footer{padding:10px 14px;font-size:11px;font-weight:600;color:var(--text-secondary);border-top:1px solid var(--border);}
+
+    .btn-assign{display:flex;align-items:center;gap:6px;padding:7px 14px;border-radius:8px;font-weight:600;font-size:11px;border:none;cursor:pointer;background:var(--green-dim);color:var(--green);border:1px solid rgba(52,211,153,0.2);font-family:inherit;transition:all .2s;}
+    .btn-assign:hover{background:rgba(52,211,153,0.25);}
+    .btn-assign .material-symbols-rounded{font-size:16px;}
+
+    .btn-remove{background:none;border:1px solid var(--border);color:var(--text-muted);cursor:pointer;padding:5px;border-radius:6px;display:inline-flex;transition:all .2s;}
+    .btn-remove:hover{background:var(--red-dim);color:var(--red);border-color:rgba(248,113,113,0.2);}
+    .btn-remove .material-symbols-rounded{font-size:16px;}
+
+    /* ══════════ MODAL ══════════ */
+    .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.6);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;z-index:2000;}
+    .modal-overlay.active{display:flex;}
+    .modal{background:var(--bg-card);border:1px solid var(--border);border-radius:14px;width:100%;max-width:480px;padding:24px;max-height:90vh;overflow-y:auto;}
+    .modal h2{font-size:18px;font-weight:700;margin-bottom:20px;}
+    .form-group{margin-bottom:14px;}
+    .form-group label{display:block;font-size:11px;font-weight:600;color:var(--text-secondary);margin-bottom:6px;}
+    .form-group input[type="text"],.form-group textarea{width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:8px;font-size:13px;background:var(--bg-elevated);color:var(--text-primary);font-family:inherit;outline:none;}
+    .form-group input:focus,.form-group textarea:focus{border-color:var(--purple);box-shadow:0 0 0 2px var(--purple-dim);}
+    .form-group input::placeholder,.form-group textarea::placeholder{color:var(--text-muted);}
+    .form-group textarea{resize:vertical;}
+
+    .modal-tabs{display:flex;gap:0;margin-bottom:16px;border:1px solid var(--border);border-radius:8px;overflow:hidden;}
+    .modal-tab{flex:1;padding:10px;text-align:center;font-size:12px;font-weight:600;color:var(--text-secondary);cursor:pointer;transition:all .15s;background:var(--bg-elevated);}
+    .modal-tab.active{background:var(--purple-dim);color:var(--purple);}
+    .tab-content{display:none;}
+    .tab-content.active{display:block;}
+
+    .search-container{position:relative;}
+    .search-results{position:absolute;top:100%;left:0;right:0;background:var(--bg-elevated);border:1px solid var(--border);border-radius:8px;max-height:180px;overflow-y:auto;display:none;z-index:10;}
+    .search-result-item{padding:10px 14px;cursor:pointer;border-bottom:1px solid var(--border);transition:background .15s;}
+    .search-result-item:hover{background:rgba(255,255,255,0.04);}
+    .selected-student-chip{display:inline-flex;align-items:center;gap:6px;background:var(--purple-dim);color:var(--purple);padding:6px 12px;border-radius:8px;font-size:12px;font-weight:600;margin-top:8px;}
+    .remove-chip{cursor:pointer;opacity:0.7;}
+    .remove-chip:hover{opacity:1;}
+
+    .bulk-file-info{margin-top:15px;background:var(--bg-elevated);border:1px dashed var(--border);border-radius:12px;padding:14px;}
+    .bulk-file-info .info-header{font-size:11px;font-weight:700;color:var(--text-secondary);margin-bottom:8px;text-transform:uppercase;letter-spacing:.5px;}
+    .bulk-actions{margin-top:15px;}
+    .btn-file{display:inline-flex;align-items:center;gap:6px;padding:9px 16px;border-radius:8px;font-weight:600;font-size:12px;cursor:pointer;background:var(--purple-dim);color:var(--purple);border:1px solid rgba(167,139,250,0.2);font-family:inherit;transition:all .2s;}
+    .btn-file:hover{background:rgba(167,139,250,0.2);}
+    .sample-link{color:var(--green);text-decoration:none;font-weight:600;display:inline-flex;align-items:center;gap:4px;font-size:12px;}
+
+    .modal-footer{display:flex;justify-content:flex-end;gap:10px;margin-top:20px;padding-top:16px;border-top:1px solid var(--border);}
+    .modal-btn{padding:9px 20px;border-radius:8px;font-weight:600;font-size:12px;border:none;cursor:pointer;font-family:inherit;transition:all .2s;}
+    .modal-btn.secondary{background:rgba(255,255,255,0.06);color:var(--text-secondary);border:1px solid var(--border);}
+    .modal-btn.secondary:hover{background:rgba(255,255,255,0.1);}
+    .modal-btn.primary{background:var(--green-dim);color:var(--green);border:1px solid rgba(52,211,153,0.2);}
+    .modal-btn.primary:hover{background:rgba(52,211,153,0.25);}
+
+    /* ══════════ TOAST ══════════ */
+    #toastContainer{position:fixed;top:20px;right:20px;z-index:9999;display:flex;flex-direction:column;gap:8px;}
+    .toast{padding:12px 20px;border-radius:10px;font-size:12px;font-weight:600;color:#fff;animation:slideIn .3s ease;font-family:inherit;transition:opacity .5s;}
+    .toast.success{background:var(--green);}
+    .toast.error{background:var(--red);}
+    @keyframes slideIn{from{opacity:0;transform:translateX(40px);}to{opacity:1;transform:translateX(0);}}
+  </style>
 </head>
-
 <body>
-    <!-- SIDEBAR -->
-    <aside class="sidebar">
-        <div class="logo-section">
-            <div class="logo">
-                <img src="logo2.png" alt="Logo">
-            </div>
-            <div class="brand-name">MLA AHL</div>
-        </div>
-        <nav class="nav-links">
-            <a href="dashboard.html" class="nav-item">
-                <span class="material-symbols-rounded">dashboard</span>
-                <span>Dashboard</span>
-            </a>
-            <a href="students.html" class="nav-item">
-                <span class="material-symbols-rounded">group</span>
-                <span>Students</span>
-            </a>
-            <a href="report.html" class="nav-item">
-                <span class="material-symbols-rounded">description</span>
-                <span>Reports</span>
-            </a>
-            <a href="promotion.html" class="nav-item">
-                <span class="material-symbols-rounded">trending_up</span>
-                <span>Promote</span>
-            </a>
-            <a href="ai-assistant.html" class="nav-item">
-                <span class="material-symbols-rounded">auto_awesome</span>
-                <span>AI Assistant</span>
-            </a>
-            <a href="teachers.html" class="nav-item">
-                <span class="material-symbols-rounded">person</span>
-                <span>Teachers</span>
-            </a>
-            <a href="mentorship.html" class="nav-item active">
-                <span class="material-symbols-rounded">school</span>
-                <span>Mentors</span>
-            </a>
-            <a href="msg.html" class="nav-item" id="nav-whatsapp">
-                <span class="material-symbols-rounded">chat</span>
-                <span>WhatsApp</span>
-            </a>
-        </nav>
-        <div class="sidebar-footer">
-            <button class="logout-btn" id="logoutBtn">
-                <span class="material-symbols-rounded">logout</span>
-                <span>Log Out</span>
-            </button>
-        </div>
-    </aside>
-
-    <!-- MAIN CONTENT -->
-    <div class="main-content">
-        <header class="header">
-            <div class="page-title">
-                <h1>Mentorship Program</h1>
-                <p>Assign and manage students under faculty mentors</p>
-            </div>
-            <div class="header-actions">
-                <div class="header-user-profile">
-                    <div class="header-avatar" id="headerAvatar">AD</div>
-                    <div class="header-user-info">
-                        <div class="header-user-name" id="headerUserFullName">Admin User</div>
-                        <div class="header-user-email" id="headerUserEmail">admin@college.edu</div>
-                    </div>
-                </div>
-            </div>
-        </header>
-
-        <div class="content-area">
-            <!-- STATS CARDS -->
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <div class="stat-icon total"><span class="material-symbols-rounded">person_search</span></div>
-                    <div class="stat-info">
-                        <h3 id="totalMentors">-</h3>
-                        <p>Total Mentors</p>
-                    </div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon assigned"><span class="material-symbols-rounded">task_alt</span></div>
-                    <div class="stat-info">
-                        <h3 id="totalAssigned">-</h3>
-                        <p>Total Mentees</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- MENTORSHIP PANEL -->
-            <div class="mentorship-panel">
-                <div class="panel-card">
-                    <div class="panel-header">
-                        <h2>Faculties</h2>
-                    </div>
-                    <div class="mentor-list" id="mentorList">
-                        <!-- Content loaded via JS -->
-                    </div>
-                </div>
-
-                <div class="panel-card">
-                    <div class="panel-header" id="menteeHeader">
-                        <h2>Select a mentor to view students</h2>
-                    </div>
-                    <div class="mentee-view" id="menteeView">
-                        <div class="mentee-empty">
-                            <span class="material-symbols-rounded"
-                                style="font-size: 64px; opacity: 0.2;">supervised_user_circle</span>
-                            <p>Select a mentor from the left list to manage assigned students</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+  <aside class="sidebar">
+    <div class="sb-logo"><img src="logo.png" alt="Logo"></div>
+    <div class="sb-group">
+      <a href="dashboard.html" class="sb-link"><span class="material-symbols-rounded">dashboard</span>Dashboard</a>
+      <a href="students.html" class="sb-link"><span class="material-symbols-rounded">group</span>Students</a>
+      <a href="report.html" class="sb-link"><span class="material-symbols-rounded">description</span>Reports</a>
+      <a href="promotion.html" class="sb-link"><span class="material-symbols-rounded">trending_up</span>Promote</a>
     </div>
-
-    <!-- ASSIGN MODAL -->
-    <div class="modal-overlay" id="assignModal">
-        <div class="modal">
-            <h2>Assign Students</h2>
-
-            <div class="form-group">
-                <label>Mentor</label>
-                <input type="text" id="targetMentorName" readonly style="background: #F8FAFC;">
-                <input type="hidden" id="targetMentorEmail">
-            </div>
-
-            <div class="modal-tabs">
-                <div class="modal-tab active" onclick="switchAssignTab('single')">Single Student</div>
-                <div class="modal-tab" onclick="switchAssignTab('bulk')">Bulk Assignment</div>
-            </div>
-
-            <!-- Single Add Tab -->
-            <div id="singleTab" class="tab-content active">
-                <div class="form-group search-container">
-                    <label>Search Student (Name or USN)</label>
-                    <input type="text" id="studentSearchInput" placeholder="Type to search student..."
-                        autocomplete="off">
-                    <div id="searchResults" class="search-results"></div>
-                    <div id="selectedStudentContainer"></div>
-                </div>
-            </div>
-
-            <!-- Bulk Tab -->
-            <div id="bulkTab" class="tab-content">
-                <div class="form-group">
-                    <label>Student USNs (List)</label>
-                    <textarea id="studentUsns" rows="5"
-                        placeholder="Enter USNs separated by spaces or commas..."></textarea>
-
-                    <div
-                        style="margin-top: 15px; background: #F8FAFC; border: 1px dashed #E2E8F0; border-radius: 12px; padding: 12px;">
-                        <div
-                            style="font-size: 11px; font-weight: 700; color: var(--text-secondary); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px;">
-                            Excel / CSV File Format</div>
-                        <div style="display: flex; gap: 20px; align-items: flex-start;">
-                            <div
-                                style="background: white; padding: 8px; border-radius: 6px; border: 1px solid #E2E8F0; font-family: monospace; font-size: 10px; line-height: 1.4;">
-                                USN<br>
-                                1AY23BCA01<br>
-                                1AY23BCA02<br>
-                                ...
-                            </div>
-                            <div style="font-size: 11px; color: var(--text-secondary); line-height: 1.5; flex: 1;">
-                                • Column 1 should be USN<br>
-                                • Support <b>.xlsx, .xls, .csv</b><br>
-                                • First sheet is used for Excel
-                                <div style="margin-top: 5px;">
-                                    <a href="javascript:void(0)" onclick="downloadSampleCSV()"
-                                        style="color: var(--accent); text-decoration: none; font-weight: 600; display: inline-flex; align-items: center; gap: 4px;">
-                                        <span class="material-symbols-rounded" style="font-size: 14px;">download</span>
-                                        Download Sample
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="bulk-actions" style="margin-top: 15px;">
-                        <label class="btn-file" title="Upload an Excel or CSV file containing USNs">
-                            <span class="material-symbols-rounded" style="font-size: 18px;">upload_file</span>
-                            Upload Excel / CSV
-                            <input type="file" id="csvFileInput" accept=".csv, .xlsx, .xls" style="display: none;">
-                        </label>
-                    </div>
-                </div>
-            </div>
-
-            <div class="modal-footer">
-                <button class="modal-btn secondary" onclick="closeModal()">Cancel</button>
-                <button class="modal-btn primary" id="confirmAssignBtn">Assign Now</button>
-            </div>
-        </div>
+    <div class="sb-divider"></div>
+    <div class="sb-group">
+      <a href="ai-assistant.html" class="sb-link"><span class="material-symbols-rounded">auto_awesome</span>AI Assistant</a>
+      <a href="teachers.html" class="sb-link"><span class="material-symbols-rounded">person</span>Teachers</a>
+      <a href="mentorship.html" class="sb-link active"><span class="material-symbols-rounded">school</span>Mentors</a>
+      <a href="msg.html" class="sb-link" id="nav-whatsapp"><span class="material-symbols-rounded">chat</span>WhatsApp</a>
     </div>
+    <div class="sb-divider"></div>
+    <div class="sb-bottom"><button class="sb-logout" id="logoutBtn"><span class="material-symbols-rounded">logout</span>Log Out</button></div>
+  </aside>
 
-    <div id="toastContainer"></div>
+  <div class="main">
+    <header class="topbar">
+      <div><h1>Mentorship Program</h1><div class="topbar-sub">Assign and manage students under faculty mentors</div></div>
+      <div class="topbar-right">
+        <div class="avatar-pill">
+          <div class="avatar-dot" id="headerAvatar">AD</div>
+          <div class="avatar-info"><div class="av-name" id="headerUserFullName">Admin User</div><div class="av-email" id="headerUserEmail">admin@college.edu</div></div>
+        </div>
+      </div>
+    </header>
 
-    <!-- Scripts -->
-    <script src="js/config.js"></script>
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
-        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
-        import { firebaseConfig } from './firebase-config.js';
+    <div class="scroll">
+      <!-- Stats -->
+      <div class="stats-grid">
+        <div class="stat-card"><div class="stat-icon total"><span class="material-symbols-rounded">person_search</span></div><div class="stat-info"><h3 id="totalMentors">-</h3><p>Total Mentors</p></div></div>
+        <div class="stat-card"><div class="stat-icon assigned"><span class="material-symbols-rounded">task_alt</span></div><div class="stat-info"><h3 id="totalAssigned">-</h3><p>Total Mentees</p></div></div>
+      </div>
 
-        const API_BASE_URL = window.APP_CONFIG.API_BASE_URL;
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
+      <!-- Panel -->
+      <div class="mentorship-panel">
+        <div class="panel-card">
+          <div class="panel-header"><h2>Faculties</h2></div>
+          <div class="mentor-list" id="mentorList"></div>
+        </div>
+        <div class="panel-card">
+          <div class="panel-header" id="menteeHeader"><h2>Select a mentor to view students</h2></div>
+          <div class="mentee-view" id="menteeView">
+            <div class="mentee-empty">
+              <span class="material-symbols-rounded">supervised_user_circle</span>
+              <p>Select a mentor from the left list to manage assigned students</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
-        let allTeachers = [];
-        let activeMentor = null;
-        let selectedStudent = null;
-        let activeAssignTab = 'single';
+  <!-- Assign Modal -->
+  <div class="modal-overlay" id="assignModal">
+    <div class="modal">
+      <h2>Assign Students</h2>
+      <div class="form-group"><label>Mentor</label><input type="text" id="targetMentorName" readonly style="background:var(--bg-surface);"><input type="hidden" id="targetMentorEmail"></div>
+      <div class="modal-tabs">
+        <div class="modal-tab active" onclick="switchAssignTab('single')">Single Student</div>
+        <div class="modal-tab" onclick="switchAssignTab('bulk')">Bulk Assignment</div>
+      </div>
 
-        // AUTH & PROFILE
-        onAuthStateChanged(auth, async (user) => {
-            if (user && user.email) {
-                updateProfile(user);
-                loadMentors();
-            } else {
-                window.location.href = 'index.html';
-            }
-        });
+      <!-- Single Tab -->
+      <div id="singleTab" class="tab-content active">
+        <div class="form-group search-container">
+          <label>Search Student (Name or USN)</label>
+          <input type="text" id="studentSearchInput" placeholder="Type to search student..." autocomplete="off">
+          <div id="searchResults" class="search-results"></div>
+          <div id="selectedStudentContainer"></div>
+        </div>
+      </div>
 
-        function updateProfile(user) {
-            const name = user.displayName || user.email.split('@')[0];
-            document.getElementById('headerUserFullName').textContent = name;
-            document.getElementById('headerUserEmail').textContent = user.email;
-            document.getElementById('headerAvatar').textContent = name.substring(0, 2).toUpperCase();
+      <!-- Bulk Tab -->
+      <div id="bulkTab" class="tab-content">
+        <div class="form-group">
+          <label>Student USNs (List)</label>
+          <textarea id="studentUsns" rows="5" placeholder="Enter USNs separated by spaces or commas..."></textarea>
+          <div class="bulk-file-info">
+            <div class="info-header">Excel / CSV File Format</div>
+            <div style="display:flex;gap:20px;align-items:flex-start;">
+              <div style="background:var(--bg-card);padding:8px;border-radius:6px;border:1px solid var(--border);font-family:monospace;font-size:10px;line-height:1.4;color:var(--text-secondary);">USN<br>1AY23BCA01<br>1AY23BCA02<br>...</div>
+              <div style="font-size:11px;color:var(--text-secondary);line-height:1.5;flex:1;">• Column 1 should be USN<br>• Support <b>.xlsx, .xls, .csv</b><br>• First sheet is used for Excel
+                <div style="margin-top:5px;"><a href="javascript:void(0)" onclick="downloadSampleCSV()" class="sample-link"><span class="material-symbols-rounded" style="font-size:14px;">download</span>Download Sample</a></div>
+              </div>
+            </div>
+          </div>
+          <div class="bulk-actions">
+            <label class="btn-file" title="Upload an Excel or CSV file containing USNs">
+              <span class="material-symbols-rounded" style="font-size:18px;">upload_file</span>Upload Excel / CSV
+              <input type="file" id="csvFileInput" accept=".csv, .xlsx, .xls" style="display:none;">
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer"><button class="modal-btn secondary" onclick="closeModal()">Cancel</button><button class="modal-btn primary" id="confirmAssignBtn">Assign Now</button></div>
+    </div>
+  </div>
+
+  <div id="toastContainer"></div>
+
+  <script src="js/config.js"></script>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+    import { firebaseConfig } from './firebase-config.js';
+
+    const API_BASE_URL = window.APP_CONFIG.API_BASE_URL;
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    let allTeachers = [];
+    let activeMentor = null;
+    let selectedStudent = null;
+    let activeAssignTab = 'single';
+
+    onAuthStateChanged(auth, async (user) => {
+      if (user && user.email) {
+        updateProfile(user);
+        loadMentors();
+      } else { window.location.href = 'index.html'; }
+    });
+
+    function updateProfile(user) {
+      const name = user.displayName || user.email.split('@')[0];
+      document.getElementById('headerUserFullName').textContent = name;
+      document.getElementById('headerUserEmail').textContent = user.email;
+      document.getElementById('headerAvatar').textContent = name.substring(0, 2).toUpperCase();
+    }
+
+    async function loadMentors() {
+      try {
+        const res = await fetch(`${API_BASE_URL}/mentorship/stats`);
+        const data = await res.json();
+        if (data.success) { allTeachers = data.stats; renderMentorList(); updateStats(); }
+      } catch (error) { console.error('Error loading mentors:', error); }
+    }
+
+    function renderMentorList() {
+      const list = document.getElementById('mentorList');
+      list.innerHTML = allTeachers.map(t => `
+        <div class="mentor-item ${activeMentor && activeMentor.email === t.email ? 'active' : ''}" onclick="selectMentor('${t.email}')">
+          <div style="font-weight:600;">${t.name}</div>
+          <div style="font-size:11px;color:var(--text-secondary);">${t.menteeCount} Students Assigned</div>
+        </div>
+      `).join('');
+    }
+
+    window.selectMentor = async function (email) {
+      activeMentor = allTeachers.find(t => t.email === email);
+      renderMentorList();
+      document.getElementById('menteeHeader').innerHTML = `
+        <h2>${activeMentor.name}'s Students <span style="font-size:14px;opacity:0.7;font-weight:400;margin-left:10px;" id="menteeCountHeader">(${activeMentor.menteeCount || 0})</span></h2>
+        <button class="btn-assign" onclick="openAssignModal()"><span class="material-symbols-rounded">person_add</span>Assign Students</button>
+      `;
+      try {
+        const res = await fetch(`${API_BASE_URL}/teacher/profile/email/${encodeURIComponent(email)}`);
+        const data = await res.json();
+        if (data.success && data.teacher) {
+          const mentees = data.teacher.mentees || [];
+          document.getElementById('menteeCountHeader').textContent = `(${mentees.length})`;
+          renderMentees(mentees);
         }
+      } catch (error) { console.error('Error fetching mentees:', error); }
+    };
 
-        // LOAD DATA
-        async function loadMentors() {
-            try {
-                const res = await fetch(`${API_BASE_URL}/mentorship/stats`);
-                const data = await res.json();
-                if (data.success) {
-                    allTeachers = data.stats;
-                    renderMentorList();
-                    updateStats();
-                }
-            } catch (error) {
-                console.error('Error loading mentors:', error);
-            }
-        }
+    function renderMentees(mentees) {
+      const view = document.getElementById('menteeView');
+      if (mentees.length === 0) {
+        view.innerHTML = `<div class="mentee-empty"><span class="material-symbols-rounded">person_off</span><p>No students assigned for mentorship yet.</p></div>`;
+        return;
+      }
+      view.innerHTML = `
+        <div class="mentee-table-container"><table><thead><tr><th>#</th><th>USN</th><th>Name</th><th>Stream</th><th>Sem</th><th>Action</th></tr></thead>
+        <tbody>${mentees.map((m, idx) => `<tr>
+          <td style="color:var(--text-secondary);font-weight:500;">${idx + 1}</td>
+          <td><span class="id-badge">${m.studentID}</span></td>
+          <td style="font-weight:500;">${m.name}</td>
+          <td>${m.stream || '-'}</td><td>${m.semester || '-'}</td>
+          <td><button class="btn-remove" onclick="removeMentee('${m.studentID}')" title="Remove Mentee"><span class="material-symbols-rounded">person_remove</span></button></td>
+        </tr>`).join('')}</tbody></table>
+        <div class="table-footer">Total Assigned Mentees: ${mentees.length}</div></div>`;
+    }
 
-        function renderMentorList() {
-            const list = document.getElementById('mentorList');
-            list.innerHTML = allTeachers.map(t => `
-                <div class="mentor-item ${activeMentor && activeMentor.email === t.email ? 'active' : ''}" onclick="selectMentor('${t.email}')">
-                    <div style="font-weight: 600;">${t.name}</div>
-                    <div style="font-size: 11px; color: var(--text-secondary);">${t.menteeCount} Students Assigned</div>
-                </div>
-            `).join('');
-        }
+    function updateStats() {
+      document.getElementById('totalMentors').textContent = allTeachers.length;
+      document.getElementById('totalAssigned').textContent = allTeachers.reduce((acc, t) => acc + t.menteeCount, 0);
+    }
 
-        window.selectMentor = async function (email) {
-            activeMentor = allTeachers.find(t => t.email === email);
-            renderMentorList();
+    window.downloadSampleCSV = function () {
+      const csvContent = "data:text/csv;charset=utf-8,USN\n1AY23BCA01\n1AY23BCA02\n1AY23BCA03";
+      const link = document.createElement("a");
+      link.setAttribute("href", encodeURI(csvContent));
+      link.setAttribute("download", "mentorship_sample.csv");
+      document.body.appendChild(link); link.click(); document.body.removeChild(link);
+    };
 
-            document.getElementById('menteeHeader').innerHTML = `
-                <h2>${activeMentor.name}'s Students <span style="font-size: 14px; opacity: 0.7; font-weight: 400; margin-left: 10px;" id="menteeCountHeader">(${activeMentor.menteeCount || 0})</span></h2>
-                <button class="btn-assign" onclick="openAssignModal()">
-                    <span class="material-symbols-rounded">person_add</span>
-                    Assign Students
-                </button>
-            `;
+    window.switchAssignTab = function (tab) {
+      activeAssignTab = tab;
+      document.querySelectorAll('.modal-tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+      if (tab === 'single') { document.querySelector('.modal-tab:nth-child(1)').classList.add('active'); document.getElementById('singleTab').classList.add('active'); }
+      else { document.querySelector('.modal-tab:nth-child(2)').classList.add('active'); document.getElementById('bulkTab').classList.add('active'); }
+    };
 
-            // Load full teacher profile to get mentees list
-            try {
-                const res = await fetch(`${API_BASE_URL}/teacher/profile/email/${encodeURIComponent(email)}`);
-                const data = await res.json();
-                if (data.success && data.teacher) {
-                    const mentees = data.teacher.mentees || [];
-                    document.getElementById('menteeCountHeader').textContent = `(${mentees.length})`;
-                    renderMentees(mentees);
-                }
-            } catch (error) {
-                console.error('Error fetching mentees:', error);
-            }
+    const searchInput = document.getElementById('studentSearchInput');
+    const searchResults = document.getElementById('searchResults');
+    let searchTimeout;
+
+    searchInput.oninput = function () {
+      clearTimeout(searchTimeout);
+      const query = this.value.trim();
+      if (query.length < 2) { searchResults.style.display = 'none'; return; }
+      searchTimeout = setTimeout(async () => {
+        try {
+          const res = await fetch(`${API_BASE_URL}/mentorship/search-students?q=${encodeURIComponent(query)}`);
+          const data = await res.json();
+          if (data.success && data.students.length > 0) {
+            searchResults.innerHTML = data.students.map(s => `<div class="search-result-item" onclick="selectStudentForAssign('${s.studentID}', '${s.name}')"><div style="font-weight:600;">${s.name}</div><div style="font-size:11px;color:var(--text-secondary);">${s.studentID} • ${s.stream} • Sem ${s.semester}</div></div>`).join('');
+            searchResults.style.display = 'block';
+          } else { searchResults.innerHTML = '<div class="search-result-item">No students found</div>'; searchResults.style.display = 'block'; }
+        } catch (error) { console.error('Search error:', error); }
+      }, 300);
+    };
+
+    window.selectStudentForAssign = function (id, name) {
+      selectedStudent = id;
+      document.getElementById('selectedStudentContainer').innerHTML = `<div class="selected-student-chip"><span>${name} (${id})</span><span class="material-symbols-rounded remove-chip" style="font-size:16px;" onclick="removeSelectedStudent()">close</span></div>`;
+      searchResults.style.display = 'none'; searchInput.value = '';
+    };
+
+    window.removeSelectedStudent = function () { selectedStudent = null; document.getElementById('selectedStudentContainer').innerHTML = ''; };
+
+    document.getElementById('csvFileInput').onchange = function (e) {
+      const file = e.target.files[0]; if (!file) return;
+      const reader = new FileReader();
+      const fileName = file.name.toLowerCase();
+      if (fileName.endsWith('.xlsx') || fileName.endsWith('.xls')) {
+        reader.onload = function (e) {
+          try {
+            const data = new Uint8Array(e.target.result);
+            const workbook = XLSX.read(data, { type: 'array' });
+            const jsonData = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]], { header: 1 });
+            let ids = []; jsonData.forEach(row => { if (row && row[0]) { const id = row[0].toString().trim(); if (id && id.length > 3) ids.push(id.toUpperCase()); } });
+            processUSNs(ids);
+          } catch (err) { showToast('Error reading Excel file', 'error'); }
         };
-
-        function renderMentees(mentees) {
-            const view = document.getElementById('menteeView');
-            if (mentees.length === 0) {
-                view.innerHTML = `
-                    <div class="mentee-empty">
-                        <span class="material-symbols-rounded" style="font-size: 64px; opacity: 0.2;">person_off</span>
-                        <p>No students assigned for mentorship yet.</p>
-                    </div>
-                `;
-                return;
-            }
-
-            view.innerHTML = `
-                <div class="mentee-table-container">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>USN</th>
-                                <th>Name</th>
-                                <th>Stream</th>
-                                <th>Sem</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            ${mentees.map((m, idx) => `
-                                <tr>
-                                    <td style="color: var(--text-secondary); font-weight: 500;">${idx + 1}</td>
-                                    <td><span class="id-badge">${m.studentID}</span></td>
-                                    <td style="font-weight: 500;">${m.name}</td>
-                                    <td>${m.stream || '-'}</td>
-                                    <td>${m.semester || '-'}</td>
-                                    <td>
-                                        <button class="btn-remove" onclick="removeMentee('${m.studentID}')" title="Remove Mentee">
-                                            <span class="material-symbols-rounded">person_remove</span>
-                                        </button>
-                                    </td>
-                                </tr>
-                            `).join('')}
-                        </tbody>
-                    </table>
-                    <div class="table-footer">
-                        Total Assigned Mentees: ${mentees.length}
-                    </div>
-                </div>
-            `;
-        }
-
-        function updateStats() {
-            document.getElementById('totalMentors').textContent = allTeachers.length;
-            const totalAssigned = allTeachers.reduce((acc, t) => acc + t.menteeCount, 0);
-            document.getElementById('totalAssigned').textContent = totalAssigned;
-        }
-
-        window.downloadSampleCSV = function () {
-            const csvContent = "data:text/csv;charset=utf-8,USN\n1AY23BCA01\n1AY23BCA02\n1AY23BCA03";
-            const encodedUri = encodeURI(csvContent);
-            const link = document.createElement("a");
-            link.setAttribute("href", encodedUri);
-            link.setAttribute("download", "mentorship_sample.csv");
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
+        reader.readAsArrayBuffer(file);
+      } else {
+        reader.onload = function (e) {
+          try {
+            const lines = e.target.result.split(/\r?\n/); let ids = [];
+            lines.forEach(line => { line.split(',').forEach(p => { const id = p.trim(); if (id && id.length > 3) ids.push(id.toUpperCase()); }); });
+            processUSNs(ids);
+          } catch (err) { showToast('Error reading CSV file', 'error'); }
         };
+        reader.readAsText(file);
+      }
+      function processUSNs(ids) {
+        if (ids.length > 0) {
+          const currentVal = document.getElementById('studentUsns').value;
+          const filteredIds = ids.filter(id => id.toUpperCase() !== 'USN');
+          document.getElementById('studentUsns').value = currentVal + (currentVal ? ', ' : '') + filteredIds.join(', ');
+          showToast(`Loaded ${filteredIds.length} students from file`, 'success');
+        } else { showToast('No valid USNs found in file', 'error'); }
+        e.target.value = '';
+      }
+    };
 
-        // --- ASIGNMENT LOGIC ---
-        window.switchAssignTab = function (tab) {
-            activeAssignTab = tab;
-            document.querySelectorAll('.modal-tab').forEach(t => t.classList.remove('active'));
-            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+    window.openAssignModal = function () {
+      document.getElementById('targetMentorName').value = activeMentor.name;
+      document.getElementById('targetMentorEmail').value = activeMentor.email;
+      document.getElementById('studentUsns').value = '';
+      window.removeSelectedStudent(); searchInput.value = '';
+      window.switchAssignTab('single');
+      document.getElementById('assignModal').classList.add('active');
+    };
 
-            if (tab === 'single') {
-                document.querySelector('.modal-tab:nth-child(1)').classList.add('active');
-                document.getElementById('singleTab').classList.add('active');
-            } else {
-                document.querySelector('.modal-tab:nth-child(2)').classList.add('active');
-                document.getElementById('bulkTab').classList.add('active');
-            }
-        };
+    window.closeModal = function () { document.getElementById('assignModal').classList.remove('active'); };
 
-        // Student Search Logic
-        let searchTimeout;
-        const searchInput = document.getElementById('studentSearchInput');
-        const searchResults = document.getElementById('searchResults');
+    document.getElementById('confirmAssignBtn').addEventListener('click', async () => {
+      const btn = document.getElementById('confirmAssignBtn');
+      const email = document.getElementById('targetMentorEmail').value;
+      let studentIDs = [];
+      if (activeAssignTab === 'single') {
+        if (!selectedStudent) { showToast('Please search and select a student first', 'error'); return; }
+        studentIDs = [selectedStudent];
+      } else {
+        const usnText = document.getElementById('studentUsns').value;
+        studentIDs = usnText.split(/[\s,]+/).filter(id => id.length > 0).map(id => id.toUpperCase());
+        if (studentIDs.length === 0) { showToast('Please enter at least one USN', 'error'); return; }
+      }
+      try {
+        btn.disabled = true; btn.textContent = 'Assigning...';
+        const res = await fetch(`${API_BASE_URL}/mentorship/assign`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ mentorEmail: email, studentIDs }) });
+        const data = await res.json();
+        if (data.success) { showToast(data.message, 'success'); window.closeModal(); await loadMentors(); window.selectMentor(email); }
+        else { showToast(data.error || 'Assignment failed', 'error'); }
+      } catch (error) { showToast('Server error', 'error'); }
+      finally { btn.disabled = false; btn.textContent = 'Assign Now'; }
+    });
 
-        searchInput.oninput = function () {
-            clearTimeout(searchTimeout);
-            const query = this.value.trim();
-            if (query.length < 2) {
-                searchResults.style.display = 'none';
-                return;
-            }
+    window.removeMentee = async function (studentID) {
+      if (!confirm(`Are you sure you want to remove ${studentID} from this mentor?`)) return;
+      try {
+        const res = await fetch(`${API_BASE_URL}/mentorship/remove`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ mentorEmail: activeMentor.email, studentID }) });
+        const data = await res.json();
+        if (data.success) { showToast('Mentee removed', 'success'); await loadMentors(); window.selectMentor(activeMentor.email); }
+      } catch (error) { showToast('Error removing mentee', 'error'); }
+    };
 
-            searchTimeout = setTimeout(async () => {
-                try {
-                    const res = await fetch(`${API_BASE_URL}/mentorship/search-students?q=${encodeURIComponent(query)}`);
-                    const data = await res.json();
-                    if (data.success && data.students.length > 0) {
-                        searchResults.innerHTML = data.students.map(s => `
-                            <div class="search-result-item" onclick="selectStudentForAssign('${s.studentID}', '${s.name}')">
-                                <div style="font-weight: 600;">${s.name}</div>
-                                <div style="font-size: 11px; color: var(--text-secondary);">${s.studentID} • ${s.stream} • Sem ${s.semester}</div>
-                            </div>
-                        `).join('');
-                        searchResults.style.display = 'block';
-                    } else {
-                        searchResults.innerHTML = '<div class="search-result-item">No students found</div>';
-                        searchResults.style.display = 'block';
-                    }
-                } catch (error) {
-                    console.error('Search error:', error);
-                }
-            }, 300);
-        };
+    function showToast(msg, type = 'success') {
+      const container = document.getElementById('toastContainer');
+      const toast = document.createElement('div'); toast.className = `toast ${type}`; toast.textContent = msg;
+      container.appendChild(toast);
+      setTimeout(() => { toast.style.opacity = '0'; setTimeout(() => toast.remove(), 500); }, 3000);
+    }
 
-        window.selectStudentForAssign = function (id, name) {
-            selectedStudent = id;
-            document.getElementById('selectedStudentContainer').innerHTML = `
-                <div class="selected-student-chip">
-                    <span>${name} (${id})</span>
-                    <span class="material-symbols-rounded remove-chip" style="font-size: 16px;" onclick="removeSelectedStudent()">close</span>
-                </div>
-            `;
-            searchResults.style.display = 'none';
-            searchInput.value = '';
-        };
-
-        window.removeSelectedStudent = function () {
-            selectedStudent = null;
-            document.getElementById('selectedStudentContainer').innerHTML = '';
-        };
-
-        // CSV/Excel Upload Logic
-        document.getElementById('csvFileInput').onchange = function (e) {
-            const file = e.target.files[0];
-            if (!file) return;
-
-            const reader = new FileReader();
-            const fileName = file.name.toLowerCase();
-
-            if (fileName.endsWith('.xlsx') || fileName.endsWith('.xls')) {
-                reader.onload = function (e) {
-                    try {
-                        const data = new Uint8Array(e.target.result);
-                        const workbook = XLSX.read(data, { type: 'array' });
-                        const firstSheetName = workbook.SheetNames[0];
-                        const worksheet = workbook.Sheets[firstSheetName];
-                        const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
-
-                        let ids = [];
-                        jsonData.forEach(row => {
-                            if (row && row[0]) {
-                                const id = row[0].toString().trim();
-                                if (id && id.length > 3) ids.push(id.toUpperCase());
-                            }
-                        });
-                        processUSNs(ids);
-                    } catch (err) {
-                        showToast('Error reading Excel file', 'error');
-                        console.error(err);
-                    }
-                };
-                reader.readAsArrayBuffer(file);
-            } else {
-                reader.onload = function (e) {
-                    try {
-                        const text = e.target.result;
-                        const lines = text.split(/\r?\n/);
-                        let ids = [];
-                        lines.forEach(line => {
-                            const parts = line.split(',');
-                            parts.forEach(p => {
-                                const id = p.trim();
-                                if (id && id.length > 3) ids.push(id.toUpperCase());
-                            });
-                        });
-                        processUSNs(ids);
-                    } catch (err) {
-                        showToast('Error reading CSV file', 'error');
-                        console.error(err);
-                    }
-                };
-                reader.readAsText(file);
-            }
-
-            function processUSNs(ids) {
-                if (ids.length > 0) {
-                    const currentVal = document.getElementById('studentUsns').value;
-                    // Filter out header if it says USN
-                    const filteredIds = ids.filter(id => id.toUpperCase() !== 'USN');
-                    document.getElementById('studentUsns').value = currentVal + (currentVal ? ', ' : '') + filteredIds.join(', ');
-                    showToast(`Loaded ${filteredIds.length} students from file`, 'success');
-                } else {
-                    showToast('No valid USNs found in file', 'error');
-                }
-                e.target.value = '';
-            }
-        };
-
-        window.openAssignModal = function () {
-            document.getElementById('targetMentorName').value = activeMentor.name;
-            document.getElementById('targetMentorEmail').value = activeMentor.email;
-            document.getElementById('studentUsns').value = '';
-            removeSelectedStudent();
-            searchInput.value = '';
-            switchAssignTab('single');
-            document.getElementById('assignModal').classList.add('active');
-        };
-
-        window.closeModal = function () {
-            document.getElementById('assignModal').classList.remove('active');
-        };
-
-        document.getElementById('confirmAssignBtn').addEventListener('click', async () => {
-            const btn = document.getElementById('confirmAssignBtn');
-            const email = document.getElementById('targetMentorEmail').value;
-
-            let studentIDs = [];
-            if (activeAssignTab === 'single') {
-                if (!selectedStudent) {
-                    showToast('Please search and select a student first', 'error');
-                    return;
-                }
-                studentIDs = [selectedStudent];
-            } else {
-                const usnText = document.getElementById('studentUsns').value;
-                studentIDs = usnText.split(/[\s,]+/).filter(id => id.length > 0).map(id => id.toUpperCase());
-                if (studentIDs.length === 0) {
-                    showToast('Please enter at least one USN', 'error');
-                    return;
-                }
-            }
-
-            try {
-                btn.disabled = true;
-                btn.textContent = 'Assigning...';
-
-                const res = await fetch(`${API_BASE_URL}/mentorship/assign`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ mentorEmail: email, studentIDs })
-                });
-                const data = await res.json();
-
-                if (data.success) {
-                    showToast(data.message, 'success');
-                    closeModal();
-                    await loadMentors();
-                    selectMentor(email);
-                } else {
-                    showToast(data.error || 'Assignment failed', 'error');
-                }
-            } catch (error) {
-                showToast('Server error', 'error');
-            } finally {
-                btn.disabled = false;
-                btn.textContent = 'Assign Now';
-            }
-        });
-
-        window.removeMentee = async function (studentID) {
-            if (!confirm(`Are you sure you want to remove ${studentID} from this mentor?`)) return;
-
-            try {
-                const res = await fetch(`${API_BASE_URL}/mentorship/remove`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ mentorEmail: activeMentor.email, studentID })
-                });
-                const data = await res.json();
-                if (data.success) {
-                    showToast('Mentee removed', 'success');
-                    await loadMentors();
-                    selectMentor(activeMentor.email);
-                }
-            } catch (error) {
-                showToast('Error removing mentee', 'error');
-            }
-        };
-
-        function showToast(msg, type = 'success') {
-            const container = document.getElementById('toastContainer');
-            const toast = document.createElement('div');
-            toast.className = `toast ${type}`;
-            toast.textContent = msg;
-            container.appendChild(toast);
-            setTimeout(() => {
-                toast.style.opacity = '0';
-                setTimeout(() => toast.remove(), 500);
-            }, 3000);
-        }
-
-        // LOGOUT
-        document.getElementById('logoutBtn').onclick = () => {
-            signOut(auth).then(() => window.location.href = 'index.html');
-        };
-    </script>
+    document.getElementById('logoutBtn').onclick = () => { signOut(auth).then(() => window.location.href = 'index.html'); };
+  </script>
 </body>
-
 </html>

@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -9,1412 +8,1117 @@
   <script src="js/config.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL@20..48,100..700,0..1" />
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <style>
     :root {
-      --primary: #0F172A;
-      --primary-light: #1E293B;
-      --accent: #10B981;
-      --text-primary: #0F172A;
-      --text-secondary: #64748B;
-      --bg-body: #F8FAFC;
-      --glass-bg: rgba(255, 255, 255, 0.7);
-      --glass-border: rgba(255, 255, 255, 0.5);
-      --danger: #EF4444;
-      --success: #10B981;
+      --bg-root: #0C0C0E;
+      --bg-sidebar: #111113;
+      --bg-surface: #161618;
+      --bg-card: #1A1A1D;
+      --bg-card-hover: #1F1F22;
+      --bg-elevated: #242427;
+      --border: rgba(255,255,255,0.05);
+      --border-hover: rgba(255,255,255,0.09);
+      --text-primary: #E8E8EC;
+      --text-secondary: #8A8A92;
+      --text-muted: #4E4E56;
+      --green: #34D399;
+      --green-dim: rgba(52,211,153,0.15);
+      --red: #F87171;
+      --red-dim: rgba(248,113,113,0.15);
+      --amber: #FBBF24;
+      --amber-dim: rgba(251,191,36,0.15);
+      --purple: #A78BFA;
+      --purple-dim: rgba(167,139,250,0.12);
+      --sidebar-w: 220px;
     }
-
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: 'Outfit', sans-serif;
-    }
-
+    * { margin:0; padding:0; box-sizing:border-box; }
     body {
-      background: #f0f4f1;
-      height: 100vh;
-      display: flex;
-      overflow: hidden;
+      font-family: 'Inter', -apple-system, sans-serif;
+      background: var(--bg-root);
       color: var(--text-primary);
+      height: 100vh; display: flex; overflow: hidden;
+      -webkit-font-smoothing: antialiased;
     }
 
-    /* ========== GLASS SIDEBAR ========== */
+    /* ══════════════ SIDEBAR ══════════════ */
     .sidebar {
-      width: 72px;
-      background: rgba(255, 255, 255, 0.45);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border-right: 1px solid var(--glass-border);
-      flex-direction: column;
-      padding: 20px 0;
-      display: flex;
+      width: var(--sidebar-w); background: var(--bg-sidebar);
+      border-right: 1px solid var(--border);
+      display: flex; flex-direction: column;
+      padding: 20px 12px; flex-shrink: 0; overflow-y: auto;
+    }
+    .sidebar::-webkit-scrollbar { width: 0; }
+
+    .sb-logo {
+      padding: 4px 8px; margin-bottom: 20px; text-align: center;
+    }
+    .sb-logo img { width: 100%; height: auto; border-radius: 8px; }
+
+    .sb-search {
+      display: flex; align-items: center; gap: 8px;
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: 8px; padding: 8px 10px; margin-bottom: 20px;
+      cursor: pointer;
+    }
+    .sb-search .material-symbols-rounded { font-size: 16px; color: var(--text-muted); }
+    .sb-search span { font-size: 12px; color: var(--text-muted); }
+
+    .sb-group { margin-bottom: 8px; }
+    .sb-link {
+      display: flex; align-items: center; gap: 10px;
+      padding: 9px 10px; border-radius: 8px; text-decoration: none;
+      color: var(--text-secondary); font-size: 13px; font-weight: 500;
+      transition: all 0.15s; position: relative;
+    }
+    .sb-link:hover { background: rgba(255,255,255,0.04); color: var(--text-primary); }
+    .sb-link.active {
+      background: rgba(255,255,255,0.06); color: var(--text-primary); font-weight: 600;
+    }
+    .sb-link .material-symbols-rounded { font-size: 18px; }
+    .sb-link .badge {
+      margin-left: auto; font-size: 10px; font-weight: 700;
+      background: var(--red); color: #fff; border-radius: 10px;
+      padding: 1px 6px; min-width: 18px; text-align: center;
+    }
+
+    .sb-divider {
+      height: 1px; background: var(--border); margin: 12px 8px;
+    }
+    .sb-section-label {
+      font-size: 10px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 1px; color: var(--text-muted);
+      padding: 8px 10px 6px; display: flex; align-items: center;
+      justify-content: space-between;
+    }
+    .sb-section-label .add-btn {
+      font-size: 16px; color: var(--text-muted); cursor: pointer;
+      background: none; border: none; line-height: 1;
+    }
+
+    /* Team list at bottom */
+    .sb-team-item {
+      display: flex; align-items: center; gap: 10px;
+      padding: 7px 10px; border-radius: 8px; cursor: pointer;
+      transition: background 0.15s;
+    }
+    .sb-team-item:hover { background: rgba(255,255,255,0.03); }
+    .sb-team-avatar {
+      width: 28px; height: 28px; border-radius: 50%;
+      background: var(--bg-elevated); display: flex; align-items: center;
+      justify-content: center; font-size: 10px; font-weight: 700;
+      color: var(--text-secondary); flex-shrink: 0;
+    }
+    .sb-team-name { font-size: 12px; font-weight: 500; color: var(--text-secondary); }
+    .sb-team-status {
+      margin-left: auto; display: flex; gap: 2px;
+    }
+    .sb-team-dot {
+      width: 4px; height: 12px; border-radius: 2px; background: var(--green);
+      opacity: 0.4;
+    }
+    .sb-team-dot.active { opacity: 1; }
+
+    .sb-bottom { margin-top: auto; padding-top: 12px; }
+    .sb-logout {
+      display: flex; align-items: center; gap: 10px;
+      padding: 9px 10px; border-radius: 8px; width: 100%;
+      background: none; border: none; color: var(--text-muted);
+      font-size: 13px; font-weight: 500; font-family: inherit;
+      cursor: pointer; transition: all 0.15s;
+    }
+    .sb-logout:hover { background: var(--red-dim); color: var(--red); }
+    .sb-logout .material-symbols-rounded { font-size: 18px; }
+
+    /* ══════════════ MAIN ══════════════ */
+    .main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+
+    /* Top bar */
+    .topbar {
+      padding: 24px 32px 0; display: flex;
+      justify-content: space-between; align-items: flex-start;
       flex-shrink: 0;
-      z-index: 1000;
-      transition: width 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-      overflow: hidden;
     }
-
-    .sidebar:hover {
-      width: 240px;
+    .topbar h1 {
+      font-size: 24px; font-weight: 700; letter-spacing: -0.5px;
     }
+    .topbar-date { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+    .topbar-right { display: flex; align-items: center; gap: 10px; }
+    .avatar-pill {
+      display: flex; align-items: center; gap: 8px;
+      padding: 4px 12px 4px 4px; background: var(--bg-card);
+      border: 1px solid var(--border); border-radius: 40px;
+    }
+    .avatar-pill:hover { border-color: var(--border-hover); }
+    .avatar-dot {
+      width: 28px; height: 28px; border-radius: 50%;
+      background: linear-gradient(135deg, #6366F1, #A78BFA);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 10px; font-weight: 700; color: #fff;
+    }
+    .avatar-info .av-name { font-size: 11px; font-weight: 600; }
+    .avatar-info .av-email { font-size: 9px; color: var(--text-muted); }
 
-    .logo-section {
-      display: flex;
-      align-items: center;
-      height: 48px;
+
+
+    /* Scroll area */
+    .scroll {
+      flex: 1; overflow-y: auto; padding: 20px 32px 40px;
+    }
+    .scroll::-webkit-scrollbar { width: 4px; }
+    .scroll::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.06); border-radius: 10px; }
+
+    /* ══════════════ STAT CARDS ══════════════ */
+    .stats-row {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px;
       margin-bottom: 24px;
-      padding-left: 20px;
-      transition: padding 0.35s ease;
     }
-
-    .sidebar:hover .logo-section {
-      padding-left: 20px;
-    }
-
-    .logo {
-      width: 32px;
-      height: 32px;
-      flex-shrink: 0;
-    }
-
-    .logo img {
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
-      border-radius: 8px;
-    }
-
-    .brand-name {
-      font-size: 15px;
-      font-weight: 700;
-      color: var(--text-primary);
-      white-space: nowrap;
-      opacity: 0;
-      margin-left: 12px;
-      transition: opacity 0.2s ease 0.1s;
-    }
-
-    .sidebar:hover .brand-name {
-      opacity: 1;
-    }
-
-    .nav-menu {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }
-
-    .nav-item {
-      display: flex;
-      align-items: center;
-      height: 48px;
-      margin: 0 10px;
-      border-radius: 12px;
-      cursor: pointer;
-      text-decoration: none;
-      color: var(--text-secondary);
-      font-size: 14px;
-      font-weight: 500;
-      transition: all 0.25s ease;
-      overflow: hidden;
-    }
-
-    .nav-item .material-symbols-rounded {
-      font-size: 22px;
-      width: 52px;
-      min-width: 52px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      transition: all 0.25s ease;
-    }
-
-    .nav-item span:not(.material-symbols-rounded) {
-      white-space: nowrap;
-      opacity: 0;
-      transition: opacity 0.2s ease 0.1s;
-    }
-
-    .sidebar:hover .nav-item span:not(.material-symbols-rounded) {
-      opacity: 1;
-    }
-
-    .nav-item:hover {
-      background: rgba(0, 0, 0, 0.04);
-      color: var(--text-primary);
-    }
-
-    .nav-item.active {
-      background: #C6E9D2;
-      color: #1B5E2F;
-      font-weight: 600;
-    }
-
-    .nav-item.active .material-symbols-rounded {
-      color: #1B5E2F;
-    }
-
-    .nav-item.active:hover {
-      background: #B8E0C8;
-    }
-
-    .sidebar-footer {
-      margin-top: auto;
-      padding: 16px 10px 8px;
-    }
-
-    .logout-btn {
-      display: flex;
-      align-items: center;
-      height: 48px;
-      border-radius: 12px;
-      background: transparent;
-      color: #9CA3AF;
-      border: none;
-      cursor: pointer;
-      font-size: 13px;
-      font-weight: 500;
-      font-family: inherit;
-      transition: all 0.25s ease;
-      overflow: hidden;
-      width: 100%;
-    }
-
-    .logout-btn:hover {
-      background: #FEF2F2;
-      color: #DC4F4F;
-    }
-
-    .logout-btn .material-symbols-rounded {
-      font-size: 22px;
-      width: 52px;
-      min-width: 52px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-
-    .logout-btn span:not(.material-symbols-rounded) {
-      white-space: nowrap;
-      opacity: 0;
-      transition: opacity 0.2s ease 0.1s;
-    }
-
-    .sidebar:hover .logout-btn span:not(.material-symbols-rounded) {
-      opacity: 1;
-    }
-
-    /* ========== MAIN CONTENT ========== */
-    .main-content {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
+    .stat-card {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: 16px; padding: 20px 22px 18px;
+      transition: all 0.25s; display: flex; align-items: flex-end; justify-content: space-between;
       position: relative;
-      background: #FFFFFF;
     }
-
-    /* Green gradient rising from bottom */
-    .main-content::before {
-      content: '';
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      height: 55%;
-      background: linear-gradient(to bottom, rgba(198, 233, 210, 0) 0%, rgba(198, 233, 210, 0.35) 50%, rgba(198, 233, 210, 0.55) 100%);
-      pointer-events: none;
-      z-index: 0;
+    .stat-card:hover { border-color: var(--border-hover); background: var(--bg-card-hover); transform: translateY(-2px); }
+    .stat-info { display: flex; flex-direction: column; gap: 0; min-width: 0; }
+    .stat-label {
+      font-size: 12px; font-weight: 600; color: var(--text-secondary); margin-bottom: 10px;
     }
-
-    .main-content::after {
-      content: '';
-      position: absolute;
-      top: 0;
-      right: 0;
-      width: 35%;
-      height: 30%;
-      background: radial-gradient(ellipse at top right, rgba(198, 233, 210, 0.35) 0%, transparent 70%);
-      pointer-events: none;
-      z-index: 0;
+    .stat-val {
+      font-size: 32px; font-weight: 800; line-height: 1; letter-spacing: -1.5px;
+      color: var(--text-primary); margin-bottom: 8px;
     }
-
-    /* ========== HEADER ========== */
-    .header {
-      background: transparent;
-      padding: 16px 12px 12px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+    .stat-sub {
+      font-size: 11px; font-weight: 600; color: var(--green);
     }
-
-    .page-title h1 {
-      font-size: 22px;
-      font-weight: 700;
-      color: var(--text-primary);
-      letter-spacing: -0.5px;
-    }
-
-    .header-user-profile {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 3px 10px 3px 3px;
-      background: rgba(255, 255, 255, 0.3);
-      backdrop-filter: blur(10px);
-      border: 1px solid var(--glass-border);
-      border-radius: 40px;
-      cursor: pointer;
-      transition: all 0.3s;
-    }
-
-    .header-avatar {
-      width: 26px;
-      height: 26px;
-      border-radius: 50%;
-      background: #0F172A;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: white;
-      font-weight: 600;
-      font-size: 10px;
-    }
-
-    .header-user-name {
-      font-size: 11px;
-      font-weight: 600;
-      color: var(--text-primary);
-      line-height: 1.2;
-    }
-
-    .header-user-email {
-      font-size: 9px;
-      color: var(--text-secondary);
-      line-height: 1;
-    }
-
-    /* ========== CONTENT AREA ========== */
-    .content-area {
-      flex: 1;
-      overflow-y: auto;
-      padding: 0 12px 24px;
-    }
-
-    /* ========== GLASS CARDS ========== */
-    .stat-card,
-    .chart-card,
-    .students-card {
-      background: var(--glass-bg);
-      backdrop-filter: blur(20px) saturate(160%);
-      -webkit-backdrop-filter: blur(20px) saturate(160%);
-      border: 1px solid var(--glass-border);
-      border-radius: 20px;
-      padding: 20px;
-      box-shadow: var(--glass-shadow);
-      transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    }
-
-    .stat-card:hover,
-    .chart-card:hover,
-    .students-card:hover {
-      transform: translateY(-4px);
-      background: rgba(255, 255, 255, 0.5);
-    }
-
-    .stats-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 24px;
-      margin-bottom: 24px;
-    }
-
-    .stat-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      margin-bottom: 16px;
-    }
-
+    .stat-sub span { color: var(--text-muted); font-weight: 400; }
     .stat-icon {
-      width: 48px;
-      height: 48px;
-      border-radius: 14px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 24px;
-      transition: all 0.3s ease;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
-    }
-
-    .stat-icon.blue {
-      background: rgba(99, 102, 241, 0.15);
-      color: #6366F1;
-    }
-
-    .stat-icon.green {
-      background: rgba(16, 185, 129, 0.15);
-      color: #10B981;
-    }
-
-    .stat-icon.orange {
-      background: rgba(245, 158, 11, 0.15);
-      color: #F59E0B;
-    }
-
-    .stat-icon.purple {
-      background: rgba(139, 92, 246, 0.15);
-      color: #8B5CF6;
-    }
-
-    .stat-trend {
-      display: flex;
-      align-items: center;
-      gap: 4px;
-      font-size: 11px;
-      font-weight: 700;
-      padding: 6px 10px;
-      border-radius: 20px;
-      background: rgba(255, 255, 255, 0.4);
-    }
-
-    .stat-title {
-      font-size: 12px;
-      color: var(--text-secondary);
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      margin-bottom: 8px;
-    }
-
-    .stat-value {
-      font-size: 28px;
-      font-weight: 700;
-      color: var(--text-primary);
-      line-height: 1;
-      margin-bottom: 6px;
-    }
-
-    .stat-subtitle {
-      font-size: 11px;
-      color: var(--text-secondary);
-      opacity: 0.7;
-    }
-
-    .charts-grid {
-      display: grid;
-      grid-template-columns: 2fr 1fr;
-      gap: 24px;
-      margin-bottom: 24px;
-    }
-
-    .card-title {
-      font-size: 18px;
-      font-weight: 700;
-      color: var(--text-primary);
-    }
-
-    .time-filter {
-      display: flex;
-      gap: 6px;
-      background: rgba(0, 0, 0, 0.05);
-      padding: 4px;
-      border-radius: 50px;
-      backdrop-filter: blur(10px);
-    }
-
-    .time-btn {
-      padding: 6px 16px;
-      border: none;
-      background: transparent;
-      border-radius: 50px;
-      font-size: 11px;
-      font-weight: 600;
-      color: var(--text-secondary);
-      cursor: pointer;
-      transition: all 0.3s ease;
-    }
-
-    .time-btn.active {
-      background: rgba(255, 255, 255, 0.9);
-      color: #0F172A;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-    }
-
-    .time-btn:hover:not(.active) {
-      background: rgba(255, 255, 255, 0.3);
-      color: var(--text-primary);
-    }
-
-    .chart-container {
+      width: 48px; height: 48px; border-radius: 14px;
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
       position: relative;
-      height: 280px;
-      width: 100%;
-      margin-top: 10px;
+      background: var(--bg-elevated); border: 1px solid var(--border);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.04);
+    }
+    .stat-icon .material-symbols-rounded { font-size: 22px; color: var(--text-secondary); position: relative; z-index: 1; }
+
+    /* ══════════════ CONTENT GRID ══════════════ */
+    .content-grid {
+      display: grid; grid-template-columns: 1fr 300px; gap: 16px;
     }
 
-    .analytics-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 24px;
-      margin-bottom: 24px;
-    }
+    /* ── Left column ── */
+    .left-col { display: flex; flex-direction: column; gap: 16px; }
 
-    .student-item,
-    .activity-item {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-      padding: 14px;
-      background: rgba(255, 255, 255, 0.2);
-      border: 1px solid var(--glass-border);
-      border-radius: 18px;
+    .card {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: 12px; transition: border-color 0.2s;
+    }
+    .card:hover { border-color: var(--border-hover); }
+    .card-head {
+      padding: 16px 20px 12px; display: flex;
+      justify-content: space-between; align-items: center;
+    }
+    .card-title {
+      font-size: 15px; font-weight: 700; letter-spacing: -0.2px;
+    }
+    .view-all {
+      font-size: 11px; font-weight: 500; color: var(--text-muted);
+      background: rgba(255,255,255,0.04); border: 1px solid var(--border);
+      padding: 4px 10px; border-radius: 6px; cursor: pointer;
+      transition: all 0.15s; text-decoration: none;
+    }
+    .view-all:hover { background: rgba(255,255,255,0.07); color: var(--text-secondary); }
+    .card-body { padding: 0 20px 18px; }
+
+    /* Chart */
+    .chart-area { height: 250px; }
+
+    .time-chips {
+      display: flex; gap: 2px; padding: 3px;
+      background: rgba(255,255,255,0.03); border-radius: 6px;
+    }
+    .chip {
+      padding: 4px 10px; border: none; background: transparent;
+      border-radius: 5px; font-family: inherit; font-size: 11px;
+      font-weight: 500; color: var(--text-muted); cursor: pointer;
+      transition: all 0.15s;
+    }
+    .chip:hover { color: var(--text-secondary); }
+    .chip.active { background: var(--bg-elevated); color: var(--text-primary); }
+
+    /* Today's class items (like "My day" in reference) */
+    .day-item {
+      padding: 16px 0; border-bottom: 1px solid var(--border);
+      display: flex; flex-direction: column; gap: 10px;
+    }
+    .day-item:last-child { border-bottom: none; }
+    .day-item-top {
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .day-time {
+      display: inline-flex; align-items: center; gap: 5px;
+      font-size: 11px; color: var(--text-muted);
+    }
+    .day-time .material-symbols-rounded { font-size: 14px; }
+    .day-stats {
+      display: flex; gap: 10px; font-size: 11px; color: var(--text-muted);
+    }
+    .day-stats span { display: flex; align-items: center; gap: 3px; }
+    .day-stats .material-symbols-rounded { font-size: 14px; }
+    .day-title { font-size: 14px; font-weight: 600; }
+    .day-tags { display: flex; gap: 6px; flex-wrap: wrap; }
+    .tag {
+      font-size: 11px; font-weight: 600; padding: 3px 10px;
+      border-radius: 14px; display: inline-flex; align-items: center; gap: 4px;
+    }
+    .tag.high { background: var(--red-dim); color: var(--red); }
+    .tag.medium { background: var(--amber-dim); color: var(--amber); }
+    .tag.low { background: var(--green-dim); color: var(--green); }
+    .tag.neutral { background: rgba(255,255,255,0.05); color: var(--text-secondary); }
+    .tag.in-progress { background: var(--purple-dim); color: var(--purple); }
+    .tag-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+
+    /* ── Right column ── */
+    .right-col { display: flex; flex-direction: column; gap: 16px; }
+
+    /* Today snapshot compact */
+    .snap-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 8px;
       margin-bottom: 12px;
-      transition: all 0.3s;
+    }
+    .snap-cell {
+      text-align: center; padding: 14px 8px; border-radius: 10px;
+    }
+    .snap-cell.present { background: var(--green-dim); }
+    .snap-cell.absent { background: var(--red-dim); }
+    .snap-val { font-size: 24px; font-weight: 800; letter-spacing: -1px; line-height: 1; }
+    .snap-cell.present .snap-val { color: var(--green); }
+    .snap-cell.absent .snap-val { color: var(--red); }
+    .snap-lbl {
+      font-size: 9px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.5px; margin-top: 4px;
+    }
+    .snap-cell.present .snap-lbl { color: rgba(52,211,153,0.6); }
+    .snap-cell.absent .snap-lbl { color: rgba(248,113,113,0.6); }
+
+    .snap-meta {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 10px 12px; background: rgba(255,255,255,0.02);
+      border-radius: 8px; border: 1px solid var(--border);
+    }
+    .sm-label { font-size: 9px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
+    .sm-val { font-size: 18px; font-weight: 800; margin-top: 2px; letter-spacing: -0.5px; }
+
+    /* Performers / Team list */
+    .team-row {
+      display: flex; align-items: center; gap: 10px;
+      padding: 8px 0; border-bottom: 1px solid var(--border);
+    }
+    .team-row:last-child { border-bottom: none; }
+    .team-avatar {
+      width: 32px; height: 32px; border-radius: 50%;
+      background: var(--bg-elevated); display: flex; align-items: center;
+      justify-content: center; font-size: 11px; font-weight: 700;
+      color: var(--text-secondary); flex-shrink: 0;
+    }
+    .team-avatar.gold { background: rgba(255,215,0,0.15); color: #FFD700; }
+    .team-avatar.silver { background: rgba(192,192,192,0.15); color: #C0C0C0; }
+    .team-avatar.bronze { background: rgba(205,127,50,0.15); color: #CD7F32; }
+    .team-info { flex: 1; min-width: 0; }
+    .team-name {
+      font-size: 12px; font-weight: 600; white-space: nowrap;
+      overflow: hidden; text-overflow: ellipsis;
+    }
+    .team-sub { font-size: 10px; color: var(--text-muted); margin-top: 1px; }
+    .team-rate { font-size: 14px; font-weight: 700; flex-shrink: 0; }
+    .team-rate.hi { color: var(--green); }
+    .team-rate.md { color: var(--amber); }
+    .team-rate.lo { color: var(--red); }
+
+    /* Alerts / Mentions */
+    .mention-row {
+      display: flex; align-items: flex-start; gap: 10px;
+      padding: 10px 0; border-bottom: 1px solid var(--border);
+    }
+    .mention-row:last-child { border-bottom: none; }
+    .mention-dot {
+      width: 32px; height: 32px; border-radius: 50%;
+      background: var(--bg-elevated); display: flex; align-items: center;
+      justify-content: center; flex-shrink: 0;
+    }
+    .mention-dot .material-symbols-rounded { font-size: 16px; }
+    .mention-dot.warn { background: var(--amber-dim); color: var(--amber); }
+    .mention-dot.err { background: var(--red-dim); color: var(--red); }
+    .mention-dot.ok { background: var(--green-dim); color: var(--green); }
+    .mention-dot.info { background: var(--purple-dim); color: var(--purple); }
+    .mention-body { flex: 1; }
+    .mention-title { font-size: 12px; font-weight: 600; }
+    .mention-desc { font-size: 11px; color: var(--text-muted); margin-top: 2px; line-height: 1.4; }
+
+    /* Stream chart */
+    .stream-chart-box { height: 220px; margin-top: 12px; }
+
+    /* Weekly */
+    .wk-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px; }
+    .wk-cell {
+      text-align: center; padding: 12px 8px;
+      background: rgba(255,255,255,0.02); border-radius: 10px;
+      border: 1px solid var(--border);
+    }
+    .wk-cell-lbl { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: var(--text-muted); margin-bottom: 6px; }
+    .wk-cell-val { font-size: 24px; font-weight: 800; letter-spacing: -1px; }
+    .wk-cell.this .wk-cell-val { color: var(--text-primary); }
+    .wk-cell.last .wk-cell-val { color: var(--text-muted); }
+    .wk-cell-sub { font-size: 9px; color: var(--text-muted); margin-top: 3px; }
+    .wk-trend {
+      text-align: center; padding: 8px; border-radius: 8px;
+      font-size: 11px; font-weight: 600;
     }
 
-    .student-item:hover,
-    .activity-item:hover {
-      background: rgba(255, 255, 255, 0.4);
-      transform: translateX(8px);
-    }
+    .empty-state { text-align: center; padding: 24px; color: var(--text-muted); font-size: 12px; }
 
-    .student-avatar {
-      width: 42px;
-      height: 42px;
-      border-radius: 12px;
-      background: #0F172A;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 600;
-      color: white;
+    /* Filter & See More */
+    .filter-row { display: flex; gap: 4px; }
+    .filter-btn {
+      padding: 4px 10px; border: 1px solid var(--border); background: transparent;
+      border-radius: 6px; font-family: inherit; font-size: 10px;
+      font-weight: 600; color: var(--text-muted); cursor: pointer;
+      transition: all 0.15s; display: flex; align-items: center; gap: 3px;
     }
-
-    .student-badge {
-      padding: 6px 12px;
-      border-radius: 20px;
-      font-size: 11px;
-      font-weight: 600;
-      background: rgba(255, 255, 255, 0.5);
+    .filter-btn:hover { border-color: var(--border-hover); color: var(--text-secondary); }
+    .filter-btn.active { background: rgba(255,255,255,0.06); color: var(--text-primary); border-color: var(--border-hover); }
+    .filter-btn .material-symbols-rounded { font-size: 13px; }
+    .see-more-btn {
+      width: 100%; padding: 10px; margin-top: 8px; border: 1px solid var(--border);
+      background: rgba(255,255,255,0.02); border-radius: 8px; font-family: inherit;
+      font-size: 11px; font-weight: 600; color: var(--text-muted); cursor: pointer;
+      transition: all 0.15s; display: flex; align-items: center; justify-content: center; gap: 4px;
     }
+    .see-more-btn:hover { background: rgba(255,255,255,0.05); color: var(--text-secondary); border-color: var(--border-hover); }
+    .see-more-btn .material-symbols-rounded { font-size: 16px; }
+    .classes-count { font-size: 10px; color: var(--text-muted); font-weight: 500; }
 
-    .activity-icon {
-      width: 40px;
-      height: 40px;
-      border-radius: 12px;
-      background: rgba(0, 0, 0, 0.05);
-      display: flex;
-      align-items: center;
-      justify-content: center;
+    /* ══════════════ RESPONSIVE ══════════════ */
+    @media (max-width: 1200px) {
+      .stats-row { grid-template-columns: repeat(2,1fr); }
+      .content-grid { grid-template-columns: 1fr; }
     }
-
-    .content-area::-webkit-scrollbar {
-      width: 4px;
+    @media (max-width: 768px) {
+      .sidebar { display: none; }
+      .topbar { padding: 16px 16px 0; }
+      .scroll { padding: 16px 16px 28px; }
+      .stats-row { grid-template-columns: 1fr 1fr; gap: 8px; }
+      .stat-val { font-size: 24px; }
     }
-
-    .content-area::-webkit-scrollbar-thumb {
-      background: rgba(0, 0, 0, 0.08);
-      border-radius: 10px;
+    @media (max-width: 480px) {
+      .stats-row { grid-template-columns: 1fr; }
     }
   </style>
 </head>
-
 <body>
-  <!-- SIDEBAR -->
+
+  <!-- ══════════ SIDEBAR ══════════ -->
   <aside class="sidebar">
-    <div class="logo-section">
-      <div class="logo">
-        <img src="logo2.png" alt="Logo">
-      </div>
-      <div class="brand-name">MLA AHL</div>
+    <div class="sb-logo">
+      <img src="logo.png" alt="Logo">
     </div>
-    <nav class="nav-menu">
-      <a href="dashboard.html" class="nav-item active">
-        <span class="material-symbols-rounded">dashboard</span>
-        <span>Dashboard</span>
+
+    <div class="sb-group">
+      <a href="dashboard.html" class="sb-link active">
+        <span class="material-symbols-rounded">dashboard</span> Dashboard
       </a>
-      <a href="students.html" class="nav-item">
-        <span class="material-symbols-rounded">group</span>
-        <span>Students</span>
+      <a href="students.html" class="sb-link">
+        <span class="material-symbols-rounded">group</span> Students
       </a>
-      <a href="report.html" class="nav-item">
-        <span class="material-symbols-rounded">description</span>
-        <span>Reports</span>
+      <a href="report.html" class="sb-link">
+        <span class="material-symbols-rounded">description</span> Reports
       </a>
-      <a href="promotion.html" class="nav-item">
-        <span class="material-symbols-rounded">trending_up</span>
-        <span>Promote</span>
+      <a href="promotion.html" class="sb-link">
+        <span class="material-symbols-rounded">trending_up</span> Promote
       </a>
-      <a href="ai-assistant.html" class="nav-item">
-        <span class="material-symbols-rounded">auto_awesome</span>
-        <span>AI Assistant</span>
+    </div>
+
+    <div class="sb-divider"></div>
+
+    <div class="sb-group">
+      <a href="ai-assistant.html" class="sb-link">
+        <span class="material-symbols-rounded">auto_awesome</span> AI Assistant
       </a>
-      <a href="teachers.html" class="nav-item">
-        <span class="material-symbols-rounded">person</span>
-        <span>Teachers</span>
+      <a href="teachers.html" class="sb-link">
+        <span class="material-symbols-rounded">person</span> Teachers
       </a>
-      <a href="mentorship.html" class="nav-item">
-        <span class="material-symbols-rounded">school</span>
-        <span>Mentors</span>
+      <a href="mentorship.html" class="sb-link">
+        <span class="material-symbols-rounded">school</span> Mentors
       </a>
-      <a href="msg.html" class="nav-item" id="nav-whatsapp">
-        <span class="material-symbols-rounded">chat</span>
-        <span>WhatsApp</span>
+      <a href="msg.html" class="sb-link" id="nav-whatsapp">
+        <span class="material-symbols-rounded">chat</span> WhatsApp
       </a>
-    </nav>
-    <div class="sidebar-footer">
-      <button class="logout-btn" id="logoutBtn">
-        <span class="material-symbols-rounded">logout</span>
-        <span>Log Out</span>
+    </div>
+
+    <div class="sb-divider"></div>
+
+    <div class="sb-section-label">
+      Quick Stats
+    </div>
+    <div class="sb-team-item">
+      <div class="sb-team-avatar" style="background:var(--green-dim);color:var(--green);">P</div>
+      <div class="sb-team-name" id="sbPresent">Present Today</div>
+      <div class="sb-team-status">
+        <div class="sb-team-dot active"></div>
+        <div class="sb-team-dot active"></div>
+        <div class="sb-team-dot"></div>
+      </div>
+    </div>
+    <div class="sb-team-item">
+      <div class="sb-team-avatar" style="background:var(--red-dim);color:var(--red);">A</div>
+      <div class="sb-team-name" id="sbAbsent">Absent Today</div>
+      <div class="sb-team-status">
+        <div class="sb-team-dot active" style="background:var(--red);"></div>
+        <div class="sb-team-dot" style="background:var(--red);"></div>
+      </div>
+    </div>
+
+    <div class="sb-bottom">
+      <button class="sb-logout" id="logoutBtn">
+        <span class="material-symbols-rounded">logout</span> Log Out
       </button>
     </div>
   </aside>
-  <!-- MAIN CONTENT -->
-  <div class="main-content">
-    <header class="header">
-      <div class="page-title">
-        <h1 id="welcomeText">Welcome back, <span id="welcomeName">Admin</span></h1>
-        <p id="currentDate">Friday, October 25, 2025</p>
+
+  <!-- ══════════ MAIN ══════════ -->
+  <div class="main">
+    <header class="topbar">
+      <div>
+        <h1 id="welcomeText">Dashboard</h1>
+        <div class="topbar-date" id="currentDate"></div>
       </div>
-      <div class="header-actions">
-        <div class="header-user-profile">
-          <div class="header-avatar" id="headerAvatar">AD</div>
-          <div class="header-user-info">
-            <div class="header-user-name" id="headerUserFullName">Admin User</div>
-            <div class="header-user-email" id="headerUserEmail">admin@college.edu</div>
+      <div class="topbar-right">
+        <div class="avatar-pill">
+          <div class="avatar-dot" id="headerAvatar">AD</div>
+          <div class="avatar-info">
+            <div class="av-name" id="headerUserFullName">Admin</div>
+            <div class="av-email" id="headerUserEmail">admin@college.edu</div>
           </div>
         </div>
       </div>
     </header>
-    <div class="content-area">
 
-      <!-- STATS CARDS -->
-      <div class="stats-grid">
+    <!-- Scroll content -->
+    <div class="scroll">
+
+      <!-- ═══ STAT CARDS ═══ -->
+      <div class="stats-row">
         <div class="stat-card">
-          <div class="stat-header">
-            <div class="stat-icon blue"><span class="material-symbols-rounded">group</span></div>
-            <div class="stat-trend" id="studentsTrend"></div>
+          <div class="stat-info">
+            <div class="stat-label">Total Students</div>
+            <div class="stat-val" id="totalStudents">—</div>
           </div>
-          <div class="stat-title">Total Students</div>
-          <div class="stat-value" id="totalStudents">-</div>
-          <div class="stat-subtitle" id="studentsSubtitle">Loading...</div>
+          <div class="stat-icon"><span class="material-symbols-rounded">school</span></div>
         </div>
         <div class="stat-card">
-          <div class="stat-header">
-            <div class="stat-icon green"><span class="material-symbols-rounded">lan</span></div>
-            <div class="stat-trend" id="streamsTrend"></div>
+          <div class="stat-info">
+            <div class="stat-label">Monthly Attendance</div>
+            <div class="stat-val"><span id="attendanceRate">—</span></div>
           </div>
-          <div class="stat-title">Active Streams</div>
-          <div class="stat-value" id="totalStreams">-</div>
-          <div class="stat-subtitle" id="streamsSubtitle">Loading...</div>
+          <div class="stat-icon"><span class="material-symbols-rounded">trending_up</span></div>
         </div>
         <div class="stat-card">
-          <div class="stat-header">
-            <div class="stat-icon orange"><span class="material-symbols-rounded">menu_book</span></div>
-            <div class="stat-trend" id="subjectsTrend"></div>
+          <div class="stat-info">
+            <div class="stat-label">Active Streams</div>
+            <div class="stat-val" id="totalStreams">—</div>
           </div>
-          <div class="stat-title">Total Subjects</div>
-          <div class="stat-value" id="totalSubjects">-</div>
-          <div class="stat-subtitle" id="subjectsSubtitle">Loading...</div>
+          <div class="stat-icon"><span class="material-symbols-rounded">account_tree</span></div>
         </div>
         <div class="stat-card">
-          <div class="stat-header">
-            <div class="stat-icon purple"><span class="material-symbols-rounded">check_circle</span></div>
-            <div class="stat-trend" id="attendanceTrend"></div>
+          <div class="stat-info">
+            <div class="stat-label">Total Subjects</div>
+            <div class="stat-val" id="totalSubjects">—</div>
           </div>
-          <div class="stat-title">Attendance Rate</div>
-          <div class="stat-value"><span id="attendanceRate">-</span></div>
-          <div class="stat-subtitle" id="attendanceSubtitle">Loading...</div>
+          <div class="stat-icon"><span class="material-symbols-rounded">auto_stories</span></div>
         </div>
       </div>
-      <!-- CHARTS -->
-      <div class="charts-grid">
-        <div class="chart-card">
-          <div class="card-header">
-            <div>
-              <div class="card-title">Attendance Trend</div>
-              <div class="card-subtitle">Overview of student attendance</div>
-            </div>
-            <div class="time-filter">
-              <button class="time-btn" data-period="week" onclick="setChartPeriod('week')">Week</button>
-              <button class="time-btn active" data-period="month" onclick="setChartPeriod('month')">Month</button>
-              <button class="time-btn" data-period="year" onclick="setChartPeriod('year')">Year</button>
-            </div>
-          </div>
-          <div class="chart-container">
-            <canvas id="attendanceChart"></canvas>
-          </div>
-        </div>
-        <div class="chart-card">
-          <div class="card-header">
-            <div>
-              <div class="card-title">Stream Distribution</div>
-              <div class="card-subtitle">Student enrollment by stream</div>
-            </div>
-          </div>
-          <div class="chart-container">
-            <canvas id="streamChart"></canvas>
-          </div>
-        </div>
-      </div>
-      <!-- TODAY'S OVERVIEW & INSIGHTS -->
-      <div class="analytics-grid">
-        <!-- Today's Attendance Overview -->
-        <div class="students-card">
-          <div class="card-header">
-            <div class="card-title"><span class="material-symbols-rounded"
-                style="font-size: 18px; vertical-align: middle; margin-right: 6px; color: #6366F1;">event</span>Today's
-              Attendance</div>
-            <div id="todayDate" style="font-size: 11px; color: #94A3B8;"></div>
-          </div>
-          <div id="todayOverview" style="padding: 10px 0;">
-            <div style="display: flex; gap: 16px; margin-bottom: 16px;">
-              <div
-                style="flex: 1; background: linear-gradient(135deg, #ECFDF5, #D1FAE5); padding: 16px; border-radius: 14px; text-align: center;">
-                <div style="font-size: 28px; font-weight: 700; color: #059669;" id="todayPresent">-</div>
-                <div style="font-size: 11px; color: #10B981; font-weight: 600; text-transform: uppercase;">Present</div>
-              </div>
-              <div
-                style="flex: 1; background: linear-gradient(135deg, #FEF2F2, #FECACA); padding: 16px; border-radius: 14px; text-align: center;">
-                <div style="font-size: 28px; font-weight: 700; color: #DC2626;" id="todayAbsent">-</div>
-                <div style="font-size: 11px; color: #EF4444; font-weight: 600; text-transform: uppercase;">Absent</div>
+
+      <!-- ═══ MAIN CONTENT ═══ -->
+      <div class="content-grid">
+
+        <!-- LEFT -->
+        <div class="left-col">
+          <!-- Chart -->
+          <div class="card">
+            <div class="card-head">
+              <span class="card-title">Attendance Trend</span>
+              <div class="time-chips">
+                <button class="chip" data-period="week" onclick="setChartPeriod('week')">Week</button>
+                <button class="chip active" data-period="month" onclick="setChartPeriod('month')">Month</button>
+                <button class="chip" data-period="year" onclick="setChartPeriod('year')">Year</button>
               </div>
             </div>
-            <div
-              style="display: flex; justify-content: space-between; align-items: center; background: #F8FAFC; padding: 12px 16px; border-radius: 12px;">
+            <div class="card-body">
+              <div class="chart-area"><canvas id="attendanceChart"></canvas></div>
+            </div>
+          </div>
+
+          <!-- Today's Classes (My Day style) -->
+          <div class="card">
+            <div class="card-head">
+              <span class="card-title">Today's Overview</span>
+              <a href="report.html" class="view-all">View all</a>
+            </div>
+            <div class="card-body" id="todayClasses">
+              <!-- JS populated -->
+              <div class="empty-state">Loading today's data...</div>
+            </div>
+          </div>
+
+          <!-- Weekly + Stream -->
+          <div class="card">
+            <div class="card-head">
+              <span class="card-title">Weekly Comparison</span>
+            </div>
+            <div class="card-body">
+              <div class="wk-row">
+                <div class="wk-cell this">
+                  <div class="wk-cell-lbl">This Week</div>
+                  <div class="wk-cell-val" id="thisWeekRate">—%</div>
+                  <div class="wk-cell-sub" id="thisWeekSessions">— sessions</div>
+                </div>
+                <div class="wk-cell last">
+                  <div class="wk-cell-lbl">Last Week</div>
+                  <div class="wk-cell-val" id="lastWeekRate">—%</div>
+                  <div class="wk-cell-sub" id="lastWeekSessions">— sessions</div>
+                </div>
+              </div>
+              <div class="wk-trend" id="weeklyTrendBadge"></div>
+              <div style="font-size:11px;font-weight:600;color:var(--text-secondary);margin-top:14px;">Stream Distribution</div>
+              <div class="stream-chart-box"><canvas id="streamChart"></canvas></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- RIGHT -->
+        <div class="right-col">
+          <!-- Today Snapshot -->
+          <div class="card">
+            <div class="card-head">
+              <span class="card-title">Today</span>
+              <span class="view-all" id="classesMarkedBadge" style="cursor:default;">0 classes</span>
+            </div>
+            <div class="card-body">
+              <div class="snap-grid">
+                <div class="snap-cell present">
+                  <div class="snap-val" id="todayPresent">—</div>
+                  <div class="snap-lbl">Present</div>
+                </div>
+                <div class="snap-cell absent">
+                  <div class="snap-val" id="todayAbsent">—</div>
+                  <div class="snap-lbl">Absent</div>
+                </div>
+              </div>
+              <div class="snap-meta">
+                <div>
+                  <div class="sm-label">Rate</div>
+                  <div class="sm-val" id="todayRate">—%</div>
+                </div>
+                <div style="text-align:right;">
+                  <div class="sm-label">Classes</div>
+                  <div class="sm-val" id="classesMarked">—</div>
+                </div>
+              </div>
+              <div style="display:none;" id="todayDate"></div>
+            </div>
+          </div>
+
+          <!-- Top Classes -->
+          <div class="card">
+            <div class="card-head">
               <div>
-                <div style="font-size: 12px; color: #64748B;">Today's Rate</div>
-                <div style="font-size: 20px; font-weight: 700; color: #1E293B;" id="todayRate">-%</div>
+                <span class="card-title">All Classes</span>
+                <span class="classes-count" id="classesCount"></span>
               </div>
-              <div style="text-align: right;">
-                <div style="font-size: 12px; color: #64748B;">Classes Marked</div>
-                <div style="font-size: 20px; font-weight: 700; color: #6366F1;" id="classesMarked">-</div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <!-- Alerts & Insights -->
-        <div class="students-card">
-          <div class="card-header">
-            <div class="card-title"><span class="material-symbols-rounded"
-                style="font-size: 18px; vertical-align: middle; margin-right: 6px; color: #F59E0B;">notifications_active</span>Alerts
-              & Insights</div>
-          </div>
-          <div id="alertsContainer" style="padding: 10px 0;">
-            <p style="color:#94A3B8;text-align:center;padding:20px;font-size:12px;">Loading alerts...</p>
-          </div>
-        </div>
-      </div>
-      <!-- TOP PERFORMERS & WEEKLY COMPARISON -->
-      <div class="analytics-grid">
-        <!-- Top Performing Streams -->
-        <div class="students-card">
-          <div class="card-header">
-            <div class="card-title"><span class="material-symbols-rounded"
-                style="font-size: 18px; vertical-align: middle; margin-right: 6px; color: #10B981;">trophy</span>Top
-              Performing Classes</div>
-            <div style="font-size: 11px; color: #94A3B8;">This Month</div>
-          </div>
-          <div id="topPerformers" style="padding: 10px 0;">
-            <p style="color:#94A3B8;text-align:center;padding:20px;font-size:12px;">Loading...</p>
-          </div>
-        </div>
-        <!-- Weekly Comparison -->
-        <div class="students-card">
-          <div class="card-header">
-            <div class="card-title"><span class="material-symbols-rounded"
-                style="font-size: 18px; vertical-align: middle; margin-right: 6px; color: #8B5CF6;">bar_chart</span>Weekly
-              Comparison</div>
-          </div>
-          <div id="weeklyComparison" style="padding: 16px 0;">
-            <div style="display: flex; gap: 16px;">
-              <div style="flex: 1; text-align: center; padding: 16px; background: #F8FAFC; border-radius: 14px;">
-                <div style="font-size: 11px; color: #64748B; margin-bottom: 8px; text-transform: uppercase;">This Week
-                </div>
-                <div style="font-size: 32px; font-weight: 700; color: #6366F1;" id="thisWeekRate">-%</div>
-                <div style="font-size: 11px; color: #94A3B8;" id="thisWeekSessions">- sessions</div>
-              </div>
-              <div style="flex: 1; text-align: center; padding: 16px; background: #F8FAFC; border-radius: 14px;">
-                <div style="font-size: 11px; color: #64748B; margin-bottom: 8px; text-transform: uppercase;">Last Week
-                </div>
-                <div style="font-size: 32px; font-weight: 700; color: #94A3B8;" id="lastWeekRate">-%</div>
-                <div style="font-size: 11px; color: #94A3B8;" id="lastWeekSessions">- sessions</div>
+              <div class="filter-row">
+                <button class="filter-btn active" id="filterBest" onclick="filterClasses('best')">
+                  <span class="material-symbols-rounded">arrow_upward</span> Best
+                </button>
+                <button class="filter-btn" id="filterWorst" onclick="filterClasses('worst')">
+                  <span class="material-symbols-rounded">arrow_downward</span> Worst
+                </button>
               </div>
             </div>
-            <div id="weeklyTrendBadge"
-              style="margin-top: 16px; text-align: center; padding: 10px; border-radius: 10px; font-size: 13px; font-weight: 600;">
+            <div class="card-body">
+              <div id="topPerformers"><div class="empty-state">Loading...</div></div>
+              <button class="see-more-btn" id="seeMoreBtn" onclick="toggleSeeMore()" style="display:none;">
+                <span class="material-symbols-rounded">expand_more</span>
+                <span id="seeMoreText">See more</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Alerts -->
+          <div class="card">
+            <div class="card-head">
+              <span class="card-title">Alerts</span>
+            </div>
+            <div class="card-body" id="alertsContainer">
+              <div class="empty-state">Loading alerts...</div>
             </div>
           </div>
         </div>
       </div>
-    </div>
-  </div>
-  <!-- Firebase Auth Script -->
+
+    </div><!-- /scroll -->
+  </div><!-- /main -->
+
+  <!-- ══════════ FIREBASE ══════════ -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
     import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
     import { firebaseConfig } from './firebase-config.js';
-    // ✅ API Base URL - Use localhost for development, remote for production
-    // API_BASE_URL is set in js/config.js via window.APP_CONFIG
+
     const API_BASE_URL = window.APP_CONFIG.API_BASE_URL;
-    console.log('🌐 Using API:', API_BASE_URL);
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     window.firebaseAuth = auth;
-    // Update current date
+
     function updateCurrentDate() {
-      const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-      const today = new Date();
-      const dateElement = document.getElementById('currentDate');
-      if (dateElement) {
-        dateElement.textContent = today.toLocaleDateString('en-US', options);
-      }
+      const el = document.getElementById('currentDate');
+      if (el) el.textContent = new Date().toLocaleDateString('en-US', {
+        weekday:'long', year:'numeric', month:'long', day:'numeric'
+      });
     }
     updateCurrentDate();
+
     async function fetchTeacherProfile(email) {
       try {
-        console.log('👤 Fetching teacher profile for:', email);
-        const response = await fetch(`${API_BASE_URL}/teacher/profile/email/${encodeURIComponent(email)}`);
-        if (!response.ok) {
-          console.warn(`⚠️ Teacher profile fetch failed: ${response.status}`);
-          return null;
-        }
-        const data = await response.json();
-        if (data.success && data.teacher) {
-          console.log('✅ Teacher profile loaded:', data.teacher.name);
-          return data.teacher;
-        }
-        console.warn('⚠️ Teacher profile not found in response');
-        return null;
-      } catch (error) {
-        console.error('❌ Error fetching teacher profile:', error);
-        return null;
-      }
+        const r = await fetch(`${API_BASE_URL}/teacher/profile/email/${encodeURIComponent(email)}`);
+        if (!r.ok) return null;
+        const d = await r.json();
+        return (d.success && d.teacher) ? d.teacher : null;
+      } catch { return null; }
     }
-    function getInitials(name, fallback = "IT") {
-      if (!name || typeof name !== "string") return fallback;
-      const parts = name.trim().split(" ").filter(Boolean);
-      if (parts.length === 0) return fallback;
-      return parts.map(n => n[0]).join("").substring(0, 2).toUpperCase();
-    }
-    function updateUserInfo(displayName, email) {
-      console.log('🔄 Updating user info:', { displayName, email });
-      const fullNameEl = document.getElementById('headerUserFullName');
-      const emailEl = document.getElementById('headerUserEmail');
-      const avatarEl = document.getElementById('headerAvatar');
-      const welcomeNameEl = document.getElementById('welcomeName');
 
-      if (fullNameEl) fullNameEl.textContent = displayName;
-      if (emailEl) emailEl.textContent = email;
-      if (welcomeNameEl) welcomeNameEl.textContent = displayName.split(' ')[0];
+    function getInitials(name, fb="AD") {
+      if (!name) return fb;
+      return name.trim().split(" ").filter(Boolean).map(n=>n[0]).join("").substring(0,2).toUpperCase();
+    }
 
-      const initials = getInitials(displayName);
-      if (avatarEl) avatarEl.textContent = initials;
-      console.log('✅ User info updated');
+    function updateUserInfo(name, email) {
+      const el = (id) => document.getElementById(id);
+      if (el('headerUserFullName')) el('headerUserFullName').textContent = name;
+      if (el('headerUserEmail')) el('headerUserEmail').textContent = email;
+      if (el('headerAvatar')) el('headerAvatar').textContent = getInitials(name);
+      if (el('welcomeText')) el('welcomeText').textContent = `Welcome, ${name.split(' ')[0]}`;
     }
-    // Logout handler
-    const logoutBtn = document.getElementById("logoutBtn");
-    if (logoutBtn) {
-      logoutBtn.onclick = async function () {
-        try {
-          console.log('🚪 Logging out...');
-          await signOut(auth);
-          localStorage.clear();
-          sessionStorage.clear();
-          console.log('✅ Logout successful');
-          window.location.replace("index.html");
-        } catch (error) {
-          console.error('❌ Logout error:', error);
-          // Force redirect anywa
-          window.location.replace("index.html");
-        }
-      };
-    }
-    // Auth state observer
+
+    document.getElementById("logoutBtn")?.addEventListener('click', async () => {
+      await signOut(auth); localStorage.clear(); sessionStorage.clear();
+      window.location.replace("index.html");
+    });
+
     onAuthStateChanged(auth, async (user) => {
-      console.log('🔍 Auth state changed:', user ? user.email : 'No user');
-      if (user && user.email) {
-        console.log('✅ User authenticated:', user.email);
-        // Generate display name from email
-        let displayName = user.displayName ||
-          user.email.split('@')[0]
-            .replace(/[._]/g, ' ')
-            .split(' ')
-            .map(w => w.charAt(0).toUpperCase() + w.slice(1))
-            .join(' ');
-        // Try to fetch teacher profile
+      if (user?.email) {
+        let displayName = user.displayName || user.email.split('@')[0]
+          .replace(/[._]/g,' ').split(' ')
+          .map(w=>w.charAt(0).toUpperCase()+w.slice(1)).join(' ');
         const profile = await fetchTeacherProfile(user.email);
-        if (profile && profile.name) {
-          displayName = profile.name;
-        }
+        if (profile?.name) displayName = profile.name;
         updateUserInfo(displayName, user.email);
-        // Wait for window to fully load, then load dashboard data
         if (document.readyState === 'complete') {
-          console.log('📊 Loading dashboard data...');
-          if (typeof loadDashboardData === 'function') {
-            loadDashboardData();
-          } else {
-            // Retry after a short delay if function not yet available
-            setTimeout(() => {
-              if (typeof loadDashboardData === 'function') loadDashboardData();
-            }, 500);
-          }
+          if (typeof loadDashboardData === 'function') loadDashboardData();
         } else {
           window.addEventListener('load', () => {
-            console.log('📊 Loading dashboard data after window load...');
             if (typeof loadDashboardData === 'function') loadDashboardData();
           });
         }
       } else {
-        console.warn('⚠️ No user found, redirecting to login...');
         window.location.href = 'index.html';
       }
     });
   </script>
-  <!-- Dashboard Core Script -->
+
+  <!-- ══════════ DASHBOARD LOGIC ══════════ -->
   <script>
-    // Reference global API URL (set by Firebase module script or config.js)
-    const dashboardApiUrl = (window.APP_CONFIG && window.APP_CONFIG.API_BASE_URL)
-      ? window.APP_CONFIG.API_BASE_URL
-      : 'http://localhost:5000/api';
-
-    if (!window.APP_CONFIG) {
-      console.warn('⚠️ APP_CONFIG missing, using default localhost URL');
-    }
-    console.log('📊 Dashboard API URL:', dashboardApiUrl);
+    const dashboardApiUrl = window.APP_CONFIG?.API_BASE_URL || 'http://localhost:5000/api';
     let attendanceChart, streamChart;
-    let currentPeriod = 'month'; // Default period
-
-    // Period button handler
-    function setChartPeriod(period) {
-      currentPeriod = period;
-      // Update button styles
-      document.querySelectorAll('.time-btn').forEach(btn => {
-        btn.classList.remove('active');
-        if (btn.dataset.period === period) {
-          btn.classList.add('active');
-        }
-      });
-      // Reload chart data with new period
-      loadAttendanceTrendData(period);
-    }
-
-    // Load attendance trend data for specific period
-    async function loadAttendanceTrendData(period) {
-      try {
-        const timestamp = new Date().getTime();
-        const res = await fetch(`${dashboardApiUrl}/dashboard/attendance-trend?period=${period}&t=${timestamp}`);
-        const data = await res.json();
-        if (data.success && data.trend && attendanceChart) {
-          attendanceChart.data.labels = data.trend.labels || [];
-          attendanceChart.data.datasets[0].data = data.trend.data || [];
-          attendanceChart.update();
-          console.log(`✅ Chart updated for ${period}:`, data.trend.labels?.length, 'data points');
-        }
-      } catch (error) {
-        console.error('❌ Error loading trend data:', error);
-      }
-    }
+    let currentPeriod = 'month';
 
     function setVal(id, val) {
       const el = document.getElementById(id);
-      if (el) {
-        el.textContent = val ?? "-";
-      }
+      if (el) el.textContent = val ?? "—";
     }
-    function getInitials(name, fallback = "NA") {
-      if (!name || typeof name !== "string") return fallback;
-      const parts = name.trim().split(" ").filter(Boolean);
-      if (parts.length === 0) return fallback;
-      return parts.map(w => w[0]).join("").substring(0, 2).toUpperCase();
-    }
-    // Helper to set trend badge with real data
-    function setTrend(elementId, value, isPositiveGood = true) {
-      const el = document.getElementById(elementId);
+
+    function setTrend(elId, value) {
+      const el = document.getElementById(elId);
       if (!el) return;
       if (value === null || value === undefined) {
-        el.innerHTML = '';
-        el.className = 'stat-trend';
-        return;
+        el.innerHTML = ''; el.className = 'stat-badge flat'; return;
       }
-      const isUp = value >= 0;
-      const isGood = isPositiveGood ? isUp : !isUp;
-      const icon = isUp ? 'trending_up' : 'trending_down';
-      const colorClass = isGood ? 'up' : 'down';
-      el.className = `stat-trend ${colorClass}`;
-      el.innerHTML = `<span class="material-symbols-rounded" style="font-size: 14px;">${icon}</span> ${Math.abs(value)}%`;
+      const up = value >= 0;
+      el.className = `stat-badge ${up ? 'up' : 'down'}`;
+      el.textContent = `${up ? '+' : ''}${value}%`;
     }
-    function initCharts() {
-      console.log('📊 Initializing charts...');
-      try {
-        // Attendance Trend Chart
-        const ctxLine = document.getElementById('attendanceChart');
-        console.log('📊 Attendance canvas element:', ctxLine ? 'found' : 'NOT FOUND');
-        if (ctxLine) {
-          // Destroy existing chart if any
-          if (attendanceChart) {
-            attendanceChart.destroy();
-          }
-          const ctx = ctxLine.getContext('2d');
-          const gradient = ctx.createLinearGradient(0, 0, 0, 300);
-          gradient.addColorStop(0, 'rgba(99, 102, 241, 0.3)');
-          gradient.addColorStop(1, 'rgba(99, 102, 241, 0)');
 
-          attendanceChart = new Chart(ctxLine, {
-            type: 'bar',
-            data: {
-              labels: [],
-              datasets: [{
-                label: 'Attendance',
-                data: [],
-                backgroundColor: [
-                  '#EF4444', '#22C55E', '#3B82F6', '#F59E0B', '#10B981',
-                  '#FDBA74', '#06B6D4', '#EAB308', '#DC2626', '#1E3A8A',
-                  '#6366F1', '#8B5CF6', '#EC4899', '#14B8A6', '#F43F5E'
-                ],
-                borderRadius: 8,
-                borderWidth: 0,
-                barPercentage: 0.8,
-              }]
+
+
+    function setChartPeriod(period) {
+      currentPeriod = period;
+      document.querySelectorAll('.chip').forEach(b =>
+        b.classList.toggle('active', b.dataset.period === period)
+      );
+      loadAttendanceTrendData(period);
+    }
+
+    async function loadAttendanceTrendData(period) {
+      try {
+        const r = await fetch(`${dashboardApiUrl}/dashboard/attendance-trend?period=${period}&t=${Date.now()}`);
+        const d = await r.json();
+        if (d.success && d.trend && attendanceChart) {
+          attendanceChart.data.labels = d.trend.labels || [];
+          attendanceChart.data.datasets[0].data = d.trend.data || [];
+          attendanceChart.update('none');
+        }
+      } catch(e) { console.error('Trend error:', e); }
+    }
+
+    // ══════ CHARTS ══════
+    function initCharts() {
+      const barEl = document.getElementById('attendanceChart');
+      if (barEl) {
+        if (attendanceChart) attendanceChart.destroy();
+        attendanceChart = new Chart(barEl, {
+          type: 'bar',
+          data: { labels: [], datasets: [{
+            label: 'Attendance', data: [],
+            backgroundColor: function(ctx) {
+              const v = ctx.raw || 0;
+              if (v >= 85) return 'rgba(52,211,153,0.7)';
+              if (v >= 70) return 'rgba(167,139,250,0.7)';
+              if (v >= 50) return 'rgba(251,191,36,0.7)';
+              return 'rgba(248,113,113,0.7)';
             },
-            options: {
-              responsive: true,
-              maintainAspectRatio: false,
-              plugins: {
-                legend: { display: false },
-                tooltip: {
-                  enabled: true,
-                  backgroundColor: '#fff',
-                  titleColor: '#1E293B',
-                  bodyColor: '#1E293B',
-                  borderColor: 'rgba(0,0,0,0.1)',
-                  borderWidth: 1,
-                  padding: 12,
-                  cornerRadius: 8,
-                  displayColors: false,
-                  titleFont: { size: 11, family: 'Poppins' },
-                  bodyFont: { size: 13, weight: '700', family: 'Poppins' },
-                  callbacks: {
-                    label: function (context) {
-                      return `Attendance: ${context.parsed.y}%`;
-                    }
-                  }
-                }
+            borderRadius: 5, borderSkipped: false,
+            barPercentage: 0.6, categoryPercentage: 0.8,
+          }]},
+          options: {
+            responsive: true, maintainAspectRatio: false,
+            animation: { duration: 500, easing: 'easeOutQuart' },
+            plugins: {
+              legend: { display: false },
+              tooltip: {
+                backgroundColor: '#1A1A1D', titleColor: '#E8E8EC',
+                bodyColor: '#E8E8EC', borderColor: 'rgba(255,255,255,0.06)',
+                borderWidth: 1, padding: 10, cornerRadius: 8, displayColors: false,
+                titleFont: { size: 10, family: 'Inter' },
+                bodyFont: { size: 13, weight: '700', family: 'Inter' },
+                callbacks: { label: c => `${c.parsed.y}%` }
+              }
+            },
+            scales: {
+              y: {
+                beginAtZero: true, max: 100,
+                ticks: { color: '#4E4E56', font: { size: 10, family: 'Inter' }, stepSize: 25, callback: v => v+'%' },
+                grid: { color: 'rgba(255,255,255,0.03)', drawBorder: false }
               },
-              scales: {
-                y: {
-                  beginAtZero: true,
-                  max: 100,
-                  ticks: {
-                    color: '#64748B',
-                    font: { size: 10, family: 'Poppins' },
-                    stepSize: 20,
-                    callback: val => val + '%'
-                  },
-                  grid: { color: 'rgba(0,0,0,0.03)', drawBorder: false }
-                },
-                x: {
-                  display: true,
-                  ticks: {
-                    color: '#64748B',
-                    font: { size: 9, family: 'Poppins' },
-                    padding: 8,
-                    autoSkip: false,
-                    maxRotation: 45,
-                    minRotation: 0
-                  },
-                  grid: { display: false, drawBorder: false }
-                }
+              x: {
+                ticks: { color: '#4E4E56', font: { size: 9, family: 'Inter' }, maxRotation: 45 },
+                grid: { display: false }
               }
             }
-          });
-          console.log('✅ Attendance chart created');
-        } else {
-          console.error('❌ Attendance chart canvas not found!');
-        }
-        // Stream Distribution Chart
-        const ctxDoughnut = document.getElementById('streamChart');
-        console.log('📊 Stream chart canvas element:', ctxDoughnut ? 'found' : 'NOT FOUND');
-        if (ctxDoughnut) {
-          // Destroy existing chart if any
-          if (streamChart) {
-            streamChart.destroy();
           }
-          streamChart = new Chart(ctxDoughnut, {
-            type: 'doughnut',
-            data: {
-              labels: [],
-              datasets: [{
-                data: [],
-                backgroundColor: [
-                  '#6366F1', // Indigo
-                  '#10B981', // Emerald
-                  '#F59E0B', // Amber
-                  '#EF4444', // Rose
-                  '#8B5CF6', // Violet
-                  '#06B6D4'  // Cyan
-                ],
-                borderWidth: 0,
-                hoverOffset: 8
-              }]
-            },
-            options: {
-              responsive: true,
-              maintainAspectRatio: false,
-              cutout: '60%',
-              plugins: {
-                legend: {
-                  position: 'bottom',
-                  align: 'center',
-                  labels: {
-                    padding: 20,
-                    font: { size: 12, weight: '500', family: 'Poppins' },
-                    color: '#475569',
-                    usePointStyle: true,
-                    pointStyle: 'circle',
-                    boxWidth: 10,
-                    boxHeight: 10
-                  }
-                },
-                tooltip: {
-                  backgroundColor: '#0F172A',
-                  padding: 14,
-                  borderRadius: 12,
-                  titleFont: { family: 'Poppins', size: 13 },
-                  bodyFont: { family: 'Poppins', size: 12 }
-                }
+        });
+      }
+
+      const dEl = document.getElementById('streamChart');
+      if (dEl) {
+        if (streamChart) streamChart.destroy();
+        streamChart = new Chart(dEl, {
+          type: 'doughnut',
+          data: { labels: [], datasets: [{
+            data: [],
+            backgroundColor: ['rgba(167,139,250,0.7)','rgba(52,211,153,0.7)','rgba(251,191,36,0.7)','rgba(248,113,113,0.7)','rgba(96,165,250,0.7)','rgba(236,72,153,0.7)','rgba(6,182,212,0.7)','rgba(139,92,246,0.7)'],
+            borderWidth: 0, hoverOffset: 4
+          }]},
+          options: {
+            responsive: true, maintainAspectRatio: false, cutout: '65%',
+            animation: { duration: 500 },
+            plugins: {
+              legend: {
+                position: 'bottom',
+                labels: { padding: 6, font: { size: 9, family: 'Inter' }, color: '#8A8A92',
+                  usePointStyle: true, pointStyle: 'circle', boxWidth: 6, boxHeight: 6 }
               },
-              layout: {
-                padding: {
-                  top: 10,
-                  bottom: 10,
-                  left: 10,
-                  right: 15
-                }
-              }
+              tooltip: { backgroundColor: '#1A1A1D', padding: 8, cornerRadius: 6,
+                titleFont: { family:'Inter', size:10 }, bodyFont: { family:'Inter', size:11, weight:'600' } }
             }
-          });
-          console.log('✅ Stream chart created');
-        } else {
-          console.error('❌ Stream chart canvas not found!');
-        }
-        console.log('✅ Charts initialized successfully', { attendanceChart: !!attendanceChart, streamChart: !!streamChart });
-      } catch (error) {
-        console.error('❌ Error initializing charts:', error);
+          }
+        });
       }
     }
-    // Update charts with real data from API
+
     function updateCharts(chartData) {
-      console.log('📈 Updating charts with real data...', chartData);
-      try {
-        // Initialize charts if not already initialized
-        if (!attendanceChart || !streamChart) {
-          console.log('📊 Charts not initialized, initializing now...');
-          initCharts();
-        }
-        // Update Attendance Trend Chart
-        if (attendanceChart && chartData.attendanceTrend) {
-          const trend = chartData.attendanceTrend;
-          console.log('📊 Attendance trend data:', trend);
-          attendanceChart.data.labels = trend.labels || [];
-          attendanceChart.data.datasets[0].data = trend.data || [];
-          attendanceChart.update();
-          setTimeout(() => {
-            if (attendanceChart) {
-              attendanceChart.resize();
-              attendanceChart.update();
-            }
-          }, 200);
-          console.log('✅ Attendance chart updated with', trend.labels?.length || 0, 'data points');
-        } else {
-          console.warn('⚠️ Cannot update attendance chart:', { chart: !!attendanceChart, data: !!chartData.attendanceTrend });
-        }
-        // Update Stream Distribution Chart
-        if (streamChart && chartData.streamDistribution) {
-          const dist = chartData.streamDistribution;
-          console.log('📊 Stream distribution data:', dist);
-          streamChart.data.labels = dist.labels || [];
-          streamChart.data.datasets[0].data = dist.data || [];
-          streamChart.update('none'); // Update without animation first
-          setTimeout(() => {
-            streamChart.resize();
-            streamChart.update();
-          }, 100);
-          console.log('✅ Stream chart updated with', dist.labels?.length || 0, 'data points');
-        } else {
-          console.warn('⚠️ Cannot update stream chart:', { chart: !!streamChart, data: !!chartData.streamDistribution });
-        }
-      } catch (error) {
-        console.error('❌ Error updating charts:', error);
+      if (!attendanceChart || !streamChart) initCharts();
+      if (attendanceChart && chartData.attendanceTrend) {
+        attendanceChart.data.labels = chartData.attendanceTrend.labels || [];
+        attendanceChart.data.datasets[0].data = chartData.attendanceTrend.data || [];
+        attendanceChart.update();
+      }
+      if (streamChart && chartData.streamDistribution) {
+        streamChart.data.labels = chartData.streamDistribution.labels || [];
+        streamChart.data.datasets[0].data = chartData.streamDistribution.data || [];
+        streamChart.update();
       }
     }
-    // Load recent activity from backend
-    function loadRecentActivity(activities) {
-      const container = document.getElementById("recentActivity");
-      if (!container) {
-        console.warn('⚠️ Recent activity container not found');
+
+    // ══════ TODAY'S CLASSES (My Day style) ══════
+    function renderTodayClasses(todayOverview, topPerformers) {
+      const el = document.getElementById('todayClasses');
+      if (!el) return;
+
+      const items = [];
+      if (todayOverview) {
+        const rate = todayOverview.rate || 0;
+        const severity = rate >= 80 ? 'low' : rate >= 60 ? 'medium' : 'high';
+        const status = rate >= 80 ? 'On Track' : rate >= 60 ? 'Needs Attention' : 'Critical';
+        items.push({
+          time: `${todayOverview.classesMarked || 0} classes marked`,
+          title: `Today's attendance: ${todayOverview.present || 0} present, ${todayOverview.absent || 0} absent`,
+          tags: [
+            { label: severity === 'high' ? 'Low' : severity === 'medium' ? 'Medium' : 'Good', type: severity },
+            { label: status, type: 'in-progress' },
+            { label: `${rate}% rate`, type: 'neutral' }
+          ],
+          present: todayOverview.present || 0,
+          absent: todayOverview.absent || 0
+        });
+      }
+
+      if (topPerformers && topPerformers.length > 0) {
+        const top = topPerformers[0];
+        items.push({
+          time: 'Best performer overall',
+          title: `${top.label || top.stream + ' - Sem ' + top.semester} at ${top.rate}%`,
+          tags: [
+            { label: 'Top', type: 'low' },
+            { label: `${top.sessions} sessions`, type: 'neutral' }
+          ],
+          sessions: top.sessions
+        });
+      }
+
+      if (items.length === 0) {
+        el.innerHTML = '<div class="empty-state">No classes recorded today</div>';
         return;
       }
-      if (!Array.isArray(activities) || activities.length === 0) {
-        container.innerHTML = '<p style="color:#94A3B8;text-align:center;padding:30px;font-size:12px;">No recent activity</p>';
-        return;
-      }
-      const activityIcons = {
-        'registration': { icon: 'person_add', color: '#6366F1', bg: 'blue' },
-        'attendance': { icon: 'check_circle', color: '#10B981', bg: 'green' },
-        'promotion': { icon: 'trending_up', color: '#F59E0B', bg: 'orange' },
-        'report': { icon: 'description', color: '#8B5CF6', bg: 'purple' },
-        'default': { icon: 'info', color: '#64748B', bg: 'blue' }
-      };
-      // Helper to format time ago
-      function timeAgo(dateString) {
-        if (!dateString) return '';
-        const date = new Date(dateString);
-        const now = new Date();
-        const diffMs = now - date;
-        const diffMins = Math.floor(diffMs / 60000);
-        const diffHours = Math.floor(diffMs / 3600000);
-        const diffDays = Math.floor(diffMs / 86400000);
-        if (diffMins < 1) return 'Just now';
-        if (diffMins < 60) return `${diffMins}m ago`;
-        if (diffHours < 24) return `${diffHours}h ago`;
-        if (diffDays < 7) return `${diffDays}d ago`;
-        return date.toLocaleDateString();
-      }
-      container.innerHTML = activities.slice(0, 5).map(activity => {
-        const iconConfig = activityIcons[activity.type] || activityIcons.default;
-        return `<div class="activity-item">
-          <div class="activity-icon ${iconConfig.bg}">
-            <span class="material-symbols-rounded" style="color:${iconConfig.color}">${iconConfig.icon}</span>
+
+      el.innerHTML = items.map(item => `
+        <div class="day-item">
+          <div class="day-item-top">
+            <div class="day-time">
+              <span class="material-symbols-rounded">schedule</span> ${item.time}
+            </div>
+            <div class="day-stats">
+              <span><span class="material-symbols-rounded">person</span> ${item.present ?? item.sessions ?? 0}</span>
+            </div>
           </div>
-          <div class="student-info">
-            <div class="student-name">${activity.title || 'Activity'}</div>
-            <div class="student-details">${activity.description || ''}</div>
+          <div class="day-title">${item.title}</div>
+          <div class="day-tags">
+            ${item.tags.map(t => `<span class="tag ${t.type}"><span class="tag-dot"></span>${t.label}</span>`).join('')}
           </div>
-          <div class="student-details">${timeAgo(activity.timestamp)}</div>
-        </div>`;
-      }).join("");
-      console.log(`✅ Loaded ${activities.slice(0, 5).length} recent activities`);
-    }
-    function loadRecentStudents(students) {
-      const container = document.getElementById("recentStudents");
-      if (!container) {
-        console.warn('⚠️ Recent students container not found');
-        return;
-      }
-      if (!Array.isArray(students) || students.length === 0) {
-        container.innerHTML = '<p style="color:#94A3B8;text-align:center;padding:30px;font-size:12px;">No recent students found</p>';
-        return;
-      }
-      const colors = ["#6366F1", "#10B981", "#F59E0B", "#EF4444", "#8B5CF6"];
-      container.innerHTML = students.slice(0, 5).map((student, idx) => {
-        const initials = student.name ? getInitials(student.name, "NA") : "NA";
-        const badgeClass = student.isActive !== false ? "badge-active" : "badge-pending";
-        const badgeText = student.isActive !== false ? "Active" : "Inactive";
-        return `<div class="student-item">
-        <div class="student-avatar" style="background:${colors[idx % colors.length]};">${initials}</div>
-        <div class="student-info">
-          <div class="student-name">${student.name || "Unknown"}</div>
-          <div class="student-details">${student.stream || "N/A"} • Semester ${student.semester || "N/A"}</div>
         </div>
-        <div class="student-badge ${badgeClass}">${badgeText}</div>
-      </div>`;
-      }).join("");
-      console.log(`✅ Loaded ${students.slice(0, 5).length} recent students`);
+      `).join('');
     }
+
+    // ══════ MAIN LOAD ══════
     async function loadDashboardData() {
-      console.log('📊 Loading SaaS dashboard data...');
-      // Set loading state for stats
-      setVal("totalStudents", "...");
-      setVal("totalStreams", "...");
-      setVal("totalSubjects", "...");
-      setVal("attendanceRate", "...");
+      setVal("totalStudents","..."); setVal("totalStreams","...");
+      setVal("totalSubjects","..."); setVal("attendanceRate","...");
+
       try {
-        const timestamp = new Date().getTime();
-        const res = await fetch(`${dashboardApiUrl}/dashboard/stats?t=${timestamp}`);
-        if (!res.ok) {
-          throw new Error(`HTTP ${res.status}: ${res.statusText}`);
-        }
+        const res = await fetch(`${dashboardApiUrl}/dashboard/stats?t=${Date.now()}`);
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const data = await res.json();
-        console.log('📦 SaaS Dashboard data received:', data);
+
         if (data.success && data.stats) {
-          const stats = data.stats;
-          // Update stat values
-          setVal("totalStudents", stats.totalStudents ?? 0);
-          setVal("totalStreams", stats.totalStreams ?? 0);
-          setVal("totalSubjects", stats.totalSubjects ?? 0);
-          setVal("attendanceRate", (stats.attendanceRate ?? 0) + '%');
-          // Update trend badges
-          if (stats.trends) {
-            setTrend("studentsTrend", stats.trends.students);
-            setTrend("streamsTrend", stats.trends.streams);
-            setTrend("subjectsTrend", stats.trends.subjects);
-            setTrend("attendanceTrend", stats.trends.attendance);
+          const s = data.stats;
+
+          setVal("totalStudents", s.totalStudents ?? 0);
+          setVal("totalStreams", s.totalStreams ?? 0);
+          setVal("totalSubjects", s.totalSubjects ?? 0);
+          setVal("attendanceRate", (s.attendanceRate ?? 0) + '%');
+
+          if (s.trends) {
+            setTrend("studentsTrend", s.trends.students);
+            setTrend("streamsTrend", s.trends.streams);
+            setTrend("subjectsTrend", s.trends.subjects);
+            setTrend("attendanceTrend", s.trends.attendance);
           }
-          // Update subtitles
-          setVal("studentsSubtitle", stats.studentsSubtitle || `${stats.totalStudents || 0} enrolled`);
-          setVal("streamsSubtitle", stats.streamsSubtitle || `${stats.totalStreams || 0} programs`);
-          setVal("subjectsSubtitle", stats.subjectsSubtitle || `Across all streams`);
-          setVal("attendanceSubtitle", stats.attendanceSubtitle || `This month`);
-          // ===== TODAY'S OVERVIEW =====
-          if (stats.todayOverview) {
-            const today = stats.todayOverview;
-            setVal("todayPresent", today.present ?? 0);
-            setVal("todayAbsent", today.absent ?? 0);
-            setVal("todayRate", (today.rate ?? 0) + '%');
-            setVal("classesMarked", today.classesMarked ?? 0);
-            setVal("todayDate", today.date || new Date().toISOString().split('T')[0]);
+
+          // Today
+          if (s.todayOverview) {
+            const t = s.todayOverview;
+            setVal("todayPresent", t.present ?? 0);
+            setVal("todayAbsent", t.absent ?? 0);
+            setVal("todayRate", (t.rate ?? 0) + '%');
+            setVal("classesMarked", t.classesMarked ?? 0);
+            setVal("todayDate", t.date || '');
+            const badge = document.getElementById('classesMarkedBadge');
+            if (badge) badge.textContent = `${t.classesMarked ?? 0} classes`;
+            // Sidebar quick stats
+            const sbP = document.getElementById('sbPresent');
+            const sbA = document.getElementById('sbAbsent');
+            if (sbP) sbP.textContent = `${t.present ?? 0} Present`;
+            if (sbA) sbA.textContent = `${t.absent ?? 0} Absent`;
           }
-          // ===== WEEKLY COMPARISON =====
-          if (stats.weeklyComparison) {
-            const weekly = stats.weeklyComparison;
-            setVal("thisWeekRate", (weekly.thisWeek ?? 0) + '%');
-            setVal("lastWeekRate", (weekly.lastWeek ?? 0) + '%');
-            setVal("thisWeekSessions", `${weekly.thisWeekSessions ?? 0} sessions`);
-            setVal("lastWeekSessions", `${weekly.lastWeekSessions ?? 0} sessions`);
-            // Weekly trend badge
-            const trendBadge = document.getElementById("weeklyTrendBadge");
-            if (trendBadge) {
-              const trend = weekly.trend || 0;
-              if (trend > 0) {
-                trendBadge.style.background = '#ECFDF5';
-                trendBadge.style.color = '#059669';
-                trendBadge.innerHTML = `<span class="material-symbols-rounded" style="font-size:16px;vertical-align:middle;">trending_up</span> +${trend}% improvement from last week`;
-              } else if (trend < 0) {
-                trendBadge.style.background = '#FEF2F2';
-                trendBadge.style.color = '#DC2626';
-                trendBadge.innerHTML = `<span class="material-symbols-rounded" style="font-size:16px;vertical-align:middle;">trending_down</span> ${trend}% from last week`;
-              } else {
-                trendBadge.style.background = '#F8FAFC';
-                trendBadge.style.color = '#64748B';
-                trendBadge.innerHTML = `<span class="material-symbols-rounded" style="font-size:16px;vertical-align:middle;">trending_flat</span> No change from last week`;
-              }
+
+          // Weekly
+          if (s.weeklyComparison) {
+            const w = s.weeklyComparison;
+            setVal("thisWeekRate", (w.thisWeek ?? 0) + '%');
+            setVal("lastWeekRate", (w.lastWeek ?? 0) + '%');
+            setVal("thisWeekSessions", `${w.thisWeekSessions ?? 0} sessions`);
+            setVal("lastWeekSessions", `${w.lastWeekSessions ?? 0} sessions`);
+            const tb = document.getElementById("weeklyTrendBadge");
+            if (tb) {
+              const tr = w.trend || 0;
+              if (tr > 0) { tb.style.background='var(--green-dim)'; tb.style.color='var(--green)'; tb.innerHTML=`↑ +${tr}% from last week`; }
+              else if (tr < 0) { tb.style.background='var(--red-dim)'; tb.style.color='var(--red)'; tb.innerHTML=`↓ ${tr}% from last week`; }
+              else { tb.style.background='rgba(255,255,255,0.03)'; tb.style.color='var(--text-muted)'; tb.innerHTML='→ No change'; }
             }
           }
-          // ===== ALERTS =====
-          const alertsContainer = document.getElementById("alertsContainer");
-          if (alertsContainer && stats.alerts) {
-            if (stats.alerts.length === 0) {
-              alertsContainer.innerHTML = `<div style="text-align:center;padding:20px;color:#10B981;">
-                <span class="material-symbols-rounded" style="font-size:32px;">check_circle</span>
-                <p style="margin-top:8px;font-size:13px;font-weight:600;">All Good!</p>
-                <p style="font-size:11px;color:#94A3B8;">No alerts at this time</p>
+
+          // Top Performers — store globally for filter/see-more
+          window._allClasses = s.topPerformers || [];
+          window._classSort = 'best';
+          window._classesExpanded = false;
+          renderClassesList();
+          const cc = document.getElementById('classesCount');
+          if (cc) cc.textContent = `(${window._allClasses.length})`;
+
+          // Alerts
+          const ac = document.getElementById("alertsContainer");
+          if (ac && s.alerts) {
+            if (s.alerts.length === 0) {
+              ac.innerHTML = `<div class="empty-state" style="padding:24px;">
+                <span class="material-symbols-rounded" style="font-size:24px;color:var(--green);display:block;margin-bottom:6px;">check_circle</span>
+                All clear
               </div>`;
             } else {
-              const alertColors = {
-                'warning': { bg: '#FFFBEB', border: '#FDE68A', color: '#D97706' },
-                'alert': { bg: '#FEF2F2', border: '#FECACA', color: '#DC2626' },
-                'success': { bg: '#ECFDF5', border: '#A7F3D0', color: '#059669' },
-                'info': { bg: '#EFF6FF', border: '#BFDBFE', color: '#2563EB' }
-              };
-              alertsContainer.innerHTML = stats.alerts.map(alert => {
-                const colors = alertColors[alert.type] || alertColors.info;
-                return `<div style="display:flex;align-items:center;gap:12px;padding:12px;margin-bottom:8px;background:${colors.bg};border:1px solid ${colors.border};border-radius:12px;">
-                  <span class="material-symbols-rounded" style="color:${colors.color};font-size:20px;">${alert.icon || 'info'}</span>
-                  <div style="flex:1;">
-                    <div style="font-size:13px;font-weight:600;color:${colors.color};">${alert.title}</div>
-                    <div style="font-size:11px;color:#64748B;">${alert.description}</div>
-                  </div>
-                </div>`;
-              }).join('');
+              const iconMap = { warning:'warn', alert:'err', success:'ok', info:'info' };
+              const matMap = { warning:'warning', alert:'error', success:'check_circle', info:'info' };
+              ac.innerHTML = s.alerts.map(a => `<div class="mention-row">
+                <div class="mention-dot ${iconMap[a.type]||'info'}">
+                  <span class="material-symbols-rounded">${matMap[a.type]||'info'}</span>
+                </div>
+                <div class="mention-body">
+                  <div class="mention-title">${a.title}</div>
+                  <div class="mention-desc">${a.description}</div>
+                </div>
+              </div>`).join('');
             }
           }
-          // ===== TOP PERFORMERS =====
-          const topPerformersContainer = document.getElementById("topPerformers");
-          if (topPerformersContainer && stats.topPerformers) {
-            if (stats.topPerformers.length === 0) {
-              topPerformersContainer.innerHTML = '<p style="color:#94A3B8;text-align:center;padding:20px;font-size:12px;">No data available</p>';
-            } else {
-              const rankColors = ['#FFD700', '#C0C0C0', '#CD7F32', '#6366F1', '#8B5CF6', '#10B981'];
-              topPerformersContainer.innerHTML = stats.topPerformers.map((item, idx) => {
-                const rateColor = item.rate >= 90 ? '#059669' : item.rate >= 75 ? '#D97706' : '#DC2626';
-                const rankColor = rankColors[idx] || '#94A3B8';
-                const displayLabel = item.label || `${item.stream} - Sem ${item.semester}`;
-                return `<div style="display:flex;align-items:center;gap:12px;padding:12px;margin-bottom:8px;background:#F8FAFC;border-radius:12px;">
-                  <div style="width:32px;height:32px;background:${rankColor};border-radius:8px;display:flex;align-items:center;justify-content:center;color:white;font-weight:700;font-size:14px;box-shadow:0 2px 4px rgba(0,0,0,0.1);">${idx + 1}</div>
-                  <div style="flex:1;">
-                    <div style="font-size:13px;font-weight:600;color:#1E293B;">${displayLabel}</div>
-                    <div style="font-size:11px;color:#94A3B8;">${item.sessions} sessions this month</div>
-                  </div>
-                  <div style="font-size:18px;font-weight:700;color:${rateColor};">${item.rate}%</div>
-                </div>`;
-              }).join('');
+
+          // Today's Classes (My Day)
+          renderTodayClasses(s.todayOverview, s.topPerformers);
+
+          // Charts
+          if (s.charts) {
+            initCharts();
+            // Only update stream chart from stats, attendance trend loaded separately
+            if (streamChart && s.charts.streamDistribution) {
+              streamChart.data.labels = s.charts.streamDistribution.labels || [];
+              streamChart.data.datasets[0].data = s.charts.streamDistribution.data || [];
+              streamChart.update();
             }
-          }
-          // Update charts with real data
-          if (stats.charts) {
-            console.log('📊 Received chart data from API:', stats.charts);
-            updateCharts(stats.charts);
-            // Also load trend data for current period (default: month)
             loadAttendanceTrendData(currentPeriod);
-          } else {
-            console.warn('⚠️ No chart data in API response');
           }
-          console.log('✅ SaaS Dashboard loaded successfully');
+        }
+      } catch(e) {
+        console.error('Dashboard error:', e);
+        setVal("totalStudents","0"); setVal("totalStreams","0");
+        setVal("totalSubjects","0"); setVal("attendanceRate","0%");
+        const ac = document.getElementById("alertsContainer");
+        if (ac) ac.innerHTML = `<div class="empty-state" style="color:var(--red);">
+          <span class="material-symbols-rounded" style="font-size:22px;display:block;margin-bottom:6px;">error</span>
+          ${e.message}
+        </div>`;
+      }
+    }
+
+    // ══════ CLASSES FILTER + SEE MORE ══════
+    const CLASSES_INITIAL = 5;
+
+    function renderClassesList() {
+      const tp = document.getElementById("topPerformers");
+      const btn = document.getElementById("seeMoreBtn");
+      if (!tp) return;
+
+      const all = window._allClasses || [];
+      if (all.length === 0) {
+        tp.innerHTML = '<div class="empty-state">No data</div>';
+        if (btn) btn.style.display = 'none';
+        return;
+      }
+
+      // Sort
+      const sorted = [...all];
+      if (window._classSort === 'worst') sorted.sort((a, b) => a.rate - b.rate);
+      else sorted.sort((a, b) => b.rate - a.rate);
+
+      const expanded = window._classesExpanded;
+      const visible = expanded ? sorted : sorted.slice(0, CLASSES_INITIAL);
+
+      tp.innerHTML = visible.map((item, i) => {
+        const rank = window._classSort === 'worst' ? sorted.length - i : i + 1;
+        const pctCls = item.rate >= 85 ? 'hi' : item.rate >= 70 ? 'md' : 'lo';
+        const avatarCls = i === 0 ? (window._classSort === 'best' ? 'gold' : '') :
+                          i === 1 ? (window._classSort === 'best' ? 'silver' : '') :
+                          i === 2 ? (window._classSort === 'best' ? 'bronze' : '') : '';
+        return `<div class="team-row">
+          <div class="team-avatar ${avatarCls}">${i + 1}</div>
+          <div class="team-info">
+            <div class="team-name">${item.label || `${item.stream} Sem ${item.semester}`}</div>
+            <div class="team-sub">${item.sessions} sessions</div>
+          </div>
+          <div class="team-rate ${pctCls}">${item.rate}%</div>
+        </div>`;
+      }).join('');
+
+      // See more button
+      if (btn) {
+        if (sorted.length > CLASSES_INITIAL) {
+          btn.style.display = 'flex';
+          const txt = document.getElementById('seeMoreText');
+          const ico = btn.querySelector('.material-symbols-rounded');
+          if (expanded) {
+            if (txt) txt.textContent = 'See less';
+            if (ico) ico.textContent = 'expand_less';
+          } else {
+            if (txt) txt.textContent = `See all ${sorted.length} classes`;
+            if (ico) ico.textContent = 'expand_more';
+          }
         } else {
-          throw new Error(data.error || 'Failed to load dashboard stats');
-        }
-      } catch (error) {
-        console.error('❌ Error loading dashboard data:', error);
-        setVal("totalStudents", "0");
-        setVal("totalStreams", "0");
-        setVal("totalSubjects", "0");
-        setVal("attendanceRate", "0%");
-        // Show error in alerts section
-        const alertsContainer = document.getElementById("alertsContainer");
-        if (alertsContainer) {
-          alertsContainer.innerHTML = `<div style="text-align:center;padding:20px;color:#EF4444;">
-            <span class="material-symbols-rounded" style="font-size:32px;">error</span>
-            <p style="margin-top:8px;font-size:12px;">${error.message}</p>
-          </div>`;
+          btn.style.display = 'none';
         }
       }
     }
-    // Initialize charts when DOM is ready
 
-
-    // Refresh Dashboard
-    async function refreshDashboardData() {
-      const refreshBtn = document.getElementById('refreshDashboard');
-      const refreshIcon = document.getElementById('refreshIcon');
-
-      // Disable button and show spinning animation
-      if (refreshBtn) refreshBtn.disabled = true;
-      if (refreshIcon) refreshIcon.style.animation = 'spin 1s linear infinite';
-
-      try {
-        await loadDashboardData();
-        console.log('✅ Dashboard refreshed successfully');
-      } catch (error) {
-        console.error('❌ Refresh failed:', error);
-      } finally {
-        // Re-enable button and stop spinning
-        if (refreshBtn) refreshBtn.disabled = false;
-        if (refreshIcon) refreshIcon.style.animation = 'none';
-      }
+    function filterClasses(mode) {
+      window._classSort = mode;
+      window._classesExpanded = false;
+      document.getElementById('filterBest')?.classList.toggle('active', mode === 'best');
+      document.getElementById('filterWorst')?.classList.toggle('active', mode === 'worst');
+      renderClassesList();
     }
-    // ============================================================================
-    // INITIALIZATION
-    // ============================================================================
+
+    function toggleSeeMore() {
+      window._classesExpanded = !window._classesExpanded;
+      renderClassesList();
+    }
 
     document.addEventListener('DOMContentLoaded', () => {
-      console.log('🚀 Dashboard Initializing...');
       loadDashboardData();
-
-      // Setup refresh button listener if element exists
-      const refreshBtn = document.getElementById('refreshDashboard');
-      if (refreshBtn) {
-        refreshBtn.addEventListener('click', refreshDashboardData);
-      }
     });
-
   </script>
 </body>
-
 </html>
