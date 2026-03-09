@@ -1154,17 +1154,33 @@ async function processBulkUpload() {
                 return;
             }
 
+            const getVal = (row, possibleKeys) => {
+                const keys = Object.keys(row);
+                for (let key of possibleKeys) {
+                    const normalizedTargetKey = key.replace(/[\s_.-]/g, '').toLowerCase();
+                    const match = keys.find(k => k.replace(/[\s_.-]/g, '').toLowerCase() === normalizedTargetKey);
+                    if (match && row[match] !== undefined && row[match] !== null && String(row[match]).trim() !== '') {
+                        return String(row[match]).trim();
+                    }
+                }
+                return '';
+            };
+
             const students = jsonData.map(row => ({
-                studentID: row.studentID || row.StudentID || row.ID || '',
-                name: row.name || row.Name || '',
-                parentPhone: row.parentPhone || row.ParentPhone || row.Phone || '',
-                languageSubject: row.languageSubject || row.LanguageSubject || row.Language || '',
-                electiveSubject: row.electiveSubject || row.ElectiveSubject || row.Elective || '',
+                studentID: getVal(row, ['studentID', 'ID', 'Student ID', 'student ID', 'USN']),
+                name: getVal(row, ['name', 'Student Name', 'fullname']),
+                parentPhone: getVal(row, ['parentPhone', 'Phone', 'Mobile']),
+                languageSubject: getVal(row, ['languageSubject', 'Language']),
+                electiveSubject: getVal(row, ['electiveSubject', 'Elective']),
                 stream: stream,
                 semester: parseInt(semester),
                 academicYear: new Date().getFullYear(),
                 isActive: true
             }));
+
+            console.log("📊 Raw Row 1:", JSON.stringify(jsonData[0]));
+            console.log("🚀 Mapped Student 1:", JSON.stringify(students[0]));
+            console.log(`📊 Validating: ${students.filter(s => s.studentID && s.name).length} / ${students.length} are valid`);
 
             const response = await fetch(`${API_BASE_URL}/students/bulk`, {
                 method: 'POST',
@@ -1182,7 +1198,8 @@ async function processBulkUpload() {
                 showNotification('❌ ' + (result.error || 'Upload failed'), 'error');
             }
         } catch (error) {
-            showNotification('❌ Error processing file', 'error');
+            console.error('Error:', error);
+            showNotification('❌ Error: ' + (error.message || 'Error processing file'), 'error');
         } finally {
             showLoading(false);
         }
